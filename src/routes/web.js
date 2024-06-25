@@ -1,11 +1,8 @@
-import express from "express"
-
-const router = express.Router()
-
-const initWebRoute = (app) => {
-    router.get("/", (req, res) => {
-        return res.send("Hello world")
-    })
-    return app.use("/", router)
+const sizeRoute = require('./size')
+const homeRoute = require('./home')
+function initWebRoute(app) {
+    app.use('/size', sizeRoute)
+    app.use('/', homeRoute)
 }
+
 export default initWebRoute
