@@ -1,3 +1,8 @@
+@import 'variables';
+
 .hello {
-    color: red($color: #000000);
+    color: $color;
+}
+h1 {
+    color: red;
 }

@@ -2,7 +2,7 @@
 class HomeController {
     // GET /
     pageHome(req, res, next) {
-        res.send('page home')
+        res.render('home')
     }
 }
 module.exports = new HomeController

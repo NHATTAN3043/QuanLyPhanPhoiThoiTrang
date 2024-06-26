@@ -2,9 +2,13 @@ import express from "express"
 var path = require('path')
 const { engine } = require('express-handlebars');
 
-const configViewEgine = (app) => {
-    app.use(express.static(path.join(__dirname, 'public')))
-    
+// Lấy đường dẫn của thư mục hiện tại
+const currentDir = __dirname;
+
+// Lấy đường dẫn của thư mục cha
+const parentDir = path.dirname(currentDir);
+
+const configViewEgine = (app) => {    
     //temple engine
     app.engine('hbs',
     engine({
@@ -14,8 +18,8 @@ const configViewEgine = (app) => {
     }));
 
     app.set('view engine', 'hbs');
-    app.set('views', path.join(__dirname, './views'))
-
+    app.set('views', path.join(parentDir, 'resources','views'))
+    console.log('PATH:'+ path.join(parentDir, 'resources','views') )
 }
 
 export default configViewEgine

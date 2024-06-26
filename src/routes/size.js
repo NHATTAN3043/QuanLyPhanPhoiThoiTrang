@@ -3,6 +3,7 @@ const router = express.Router()
 
 const sizeController = require('../app/controllers/SizeController')
 
-router.get('/page-size', sizeController.ListSize)
+router.get('/view-edit/:MaSize',sizeController.viewEdit)
+router.put('/edit/:MaSize',sizeController.edit)
 
 module.exports = router;
