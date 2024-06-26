@@ -13,7 +13,6 @@ var _PhieuNhap = require("./PhieuNhap");
 var _Sanpham = require("./Sanpham");
 var _Size = require("./Size");
 var _TaiKhoan = require("./TaiKhoan");
-var sequelize = require('../config/connectDB')
 
 const initModels = (sequelize) => {
   var ChiTietPhieuNhap = _ChiTietPhieuNhap(sequelize, DataTypes);

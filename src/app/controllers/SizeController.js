@@ -1,4 +1,4 @@
-const sequelize = require('../config/connectDB') // require connection
+const sequelize = require('../../config/connectDB') // require connection
 var initModels = require('../models/init-models')
 var models = initModels(sequelize);
 class SizeController {

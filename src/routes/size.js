@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const sizeController = require('../controllers/SizeController')
+const sizeController = require('../app/controllers/SizeController')
 
 router.get('/page-size', sizeController.ListSize)
 
