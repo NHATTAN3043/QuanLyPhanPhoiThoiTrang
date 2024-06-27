@@ -1,0 +1,79 @@
+<div>
+    <h3>BẢNG SIZE SẢN PHẨM</h3> 
+    <div style="margin-top: 5px;">
+    <a href="/size/view-create" class="btn btn-success">Thêm mới</a>
+    </div>
+  </div>
+<table class="table" style="margin-top: 10px;">
+  <thead>
+    <tr>
+      <th scope="col">Mã size</th>
+      <th scope="col">
+        Tên size
+
+      </th>
+      <th scope="col">Hoạt động</th>
+    </tr>   
+  </thead>
+  <tbody>
+    {{#each sizes}}
+    <tr>
+      <td>{{this.MaSize}}</td>
+      <td>{{this.TenSize}}</td>
+      <td>
+        <div class="action-btn" style="display: flex;">
+        <a href="/size/view-edit/{{this.MaSize}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
+        <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-size-modal" data-masize="{{this.MaSize}}" >Xóa</a>
+        </div>       
+      </td> 
+    </tr>
+    {{else}}
+    <tr>
+      <td colspan="4" class="text-center">
+        Bạn chưa có size nào.
+        <a href="/size/create">Click vào đây để tạo</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-size-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa size</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-size-delete" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete size --}}
+<form name="form-delete-size" method="POST"></form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var MaSize
+    const btn_comfirm_deleteSize = document.getElementById('btn-size-delete')
+    const deleteForm = document.forms['form-delete-size'] 
+    // Function get id from btn delete
+    $('#delete-size-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    MaSize = button.data('masize') // Extract info from data-* attributes
+    })
+    // handle btn confirm delete onclick
+    btn_comfirm_deleteSize.onclick = function(){
+      deleteForm.action = '/size/delete/' + MaSize + '?_method=DELETE'
+      deleteForm.submit()
+    }
+
+  })
+</script>
