@@ -40,7 +40,7 @@ class SizeController {
     viewCreate(req, res, next) {
         res.render('./size/create')
     }
-    // POST /size/create/:MaSize
+    // POST /size/create
     async create(req, res, next) {
         try {
             await models.Size.create(req.body)

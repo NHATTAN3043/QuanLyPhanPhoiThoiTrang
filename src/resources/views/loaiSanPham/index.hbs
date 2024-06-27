@@ -1,0 +1,78 @@
+<div>
+    <h3>BẢNG LOẠI SẢN PHẨM</h3> 
+    <div style="margin-top: 5px;">
+    <a href="/lsp/view-create" class="btn btn-success">Thêm mới</a>
+    </div>
+  </div>
+<table class="table" style="margin-top: 10px;">
+  <thead>
+    <tr>
+      <th scope="col">Mã loại</th>
+      <th scope="col">
+        Tên loại
+      </th>
+      <th scope="col">Hoạt động</th>
+    </tr>   
+  </thead>
+  <tbody>
+    {{#each lsps}}
+    <tr>
+      <td>{{this.MaLoaiSanPham}}</td>
+      <td>{{this.TenLoaiSanPham}}</td>
+      <td>
+        <div class="action-btn" style="display: flex;">
+        <a href="/lsp/view-edit/{{this.MaLoaiSanPham}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
+        <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-lsp-modal" data-malsp="{{this.MaLoaiSanPham}}" >Xóa</a>
+        </div>       
+      </td> 
+    </tr>
+    {{else}}
+    <tr>
+      <td colspan="4" class="text-center">
+        Bạn chưa có loại nào.
+        <a href="/lsp/create">Click vào đây để tạo</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-lsp-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa loại</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-lsp-delete" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete lsp --}}
+<form name="form-delete-lsp" method="POST"></form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var MaLSP
+    const btn_comfirm_deleteLSP = document.getElementById('btn-lsp-delete')
+    const deleteForm = document.forms['form-delete-lsp'] 
+    // Function get id from btn delete
+    $('#delete-lsp-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    MaLSP = button.data('malsp') // Extract info from data-* attributes
+    })
+    // handle btn confirm delete onclick
+    btn_comfirm_deleteLSP.onclick = function(){
+      deleteForm.action = '/lsp/delete/' + MaLSP + '?_method=DELETE'
+      deleteForm.submit()
+    }
+
+  })
+</script>

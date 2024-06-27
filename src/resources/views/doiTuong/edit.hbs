@@ -1,0 +1,17 @@
+<div class="container">
+<h3>CẬP NHẬT ĐỐI TƯỢNG</h3>
+<form method="POST" action="/doituong/edit/{{doituong.MaDoiTuong}}?_method=PUT">
+  <div class="form-group">
+    <label for="MaDoiTuong">Mã đối tượng</label>
+    <input type="text" class="form-control" value="{{doituong.MaDoiTuong}}" id="name" name="MaDoiTuong" readonly>
+  </div>
+  <div class="form-group">
+    <label for="TenDoiTuong">Đối tượng</label>
+    <input type="text" class="form-control" value="{{doituong.TenDoiTuong}}" id="TenSize" name="TenDoiTuong">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/doituong/index">Quay lại</a>
+</div>
+</div>

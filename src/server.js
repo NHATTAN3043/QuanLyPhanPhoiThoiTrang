@@ -5,7 +5,7 @@ import initWebRoute from "./routes/web"
 require('./config/connectDB')
 const morgan = require('morgan')
 const methodOverride = require('method-override')
-
+require('dotenv').config()
 const app = express()
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -26,7 +26,7 @@ app.use(methodOverride('_method'))
 // init web router
 initWebRoute(app)
 
-const PORT = 8080
+const PORT = process.env.DB_PORT ||  8080
 
 app.listen(PORT, () => {
     console.log(`App listening on port http://localhost:${PORT}`)
