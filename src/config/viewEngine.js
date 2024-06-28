@@ -1,7 +1,7 @@
 import express from "express"
 var path = require('path')
 const { engine } = require('express-handlebars');
-
+const Handlebars  = require('../helpers/handlebars')
 // Lấy đường dẫn của thư mục hiện tại
 const currentDir = __dirname;
 
@@ -13,8 +13,7 @@ const configViewEgine = (app) => {
     app.engine('hbs',
     engine({
     extname: '.hbs',
-    helpers: {}      
-
+    handlebars: Handlebars,
     }));
 
     app.set('view engine', 'hbs');

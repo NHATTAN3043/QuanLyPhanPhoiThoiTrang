@@ -1,0 +1,100 @@
+
+<div class="container">
+    <div class="row justify-content-center">
+         <div class="col-md-12">
+            <h3 class="text-center">Cập nhật chi tiết sản phẩm</h3>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <form method="POST" action="/ctsp/edit/{{chiTietSanPham.MaChiTietSanPham}}?_method=PUT">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label class="control-label">Tên sản phẩm</label>
+                            <select class ="custom-select" name="MaSanPham" required>   
+                                {{#each sanphams}}
+                                    <option value="{{this.MaSanPham}}" {{#if (eqSelect this.MaSanPham ../chiTietSanPham.MaSanPham)}}selected{{/if}}>
+                                        {{this.TenSanPham}}
+                                    </option>
+                                {{else}}
+                                <option value="">Không có sản phẩm</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    <div class="form-group">
+                            <label class="control-label">Size</label>
+                            <select class ="custom-select" name="MaSize" required>
+                                <option value="{{chiTietSanPham.MaSize}}">{{chiTietSanPham.MaSize_Size.TenSize}}</option>
+                                {{#each sizes}}
+                                <option value="{{this.MaSize}}">{{this.TenSize}}</option>
+                                {{else}}
+                                <option value="">Không có size</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Màu</label>
+                            <select class ="custom-select" name="MaMau" required>
+                                <option value="{{chiTietSanPham.MaMau}}">{{chiTietSanPham.MaMau_Mau.TenMau}}</option>
+                                {{#each maus}}
+                                <option value="{{this.MaMau}}">{{this.TenMau}}</option>
+                                {{else}}
+                                <option value="">Không có màu</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Loại sản phẩm</label>
+                            <select class ="custom-select" name="MaLoaiSanPham" required>
+                                <option value="{{chiTietSanPham.MaLoaiSanPham}}">{{chiTietSanPham.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}Chọn loại</option>
+                                {{#each loaisanphams}}
+                                <option value="{{this.MaLoaiSanPham}}">{{this.TenLoaiSanPham}}</option>
+                                {{else}}
+                                <option value="">Không có loại </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Đối tượng khách hàng</label>
+                            <select class ="custom-select" name="MaDoiTuong" required>
+                                <option value="{{chiTietSanPham.MaDoiTuong}}">{{chiTietSanPham.MaDoiTuong_DoiTuong.TenDoiTuong}}</option>
+                                {{#each doituongs}}
+                                <option value="{{this.MaDoiTuong}}">{{this.TenDoiTuong}}</option>
+                                {{else}}
+                                <option value="">Không có đối tượng </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    {{!-- input soLuong hidden --}}
+                        <input class="form-control" name="SoLuong" type="hidden"/>
+                        
+                        <div class="form-group">
+                            <label class="control-label">Hình ảnh</label>
+                            <input type="file" name="HinhAnh" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Nơi sản xuất</label>
+                            <input class="form-control" name="NSX" value="{{chiTietSanPham.NSX}}" />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Chất liệu</label>
+                            <input class="form-control" name="ChatLieu" value="{{chiTietSanPham.ChatLieu}}" />
+                            <span for="ChatLieu" class="text-danger"></span>
+                        </div>
+                    <div class="form-group">
+                            <label class="control-label">Giá tiền(vnd)</label>
+                            <input type="number" name="GiaTien" id="GiaTien" step="1000" min="0" value="{{chiTietSanPham.GiaTien}}"/>
+                            <span for="GiaTien" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">                
+                            <button type="submit" class="btn btn-warning">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div style="margin: 0px 10px;">
+                <a href="/ctsp/index">quay lại</a>
+            </div>
+        </div>
+    </div>
+</div>

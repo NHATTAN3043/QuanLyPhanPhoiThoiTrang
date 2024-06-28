@@ -1,0 +1,51 @@
+<h1>Bảng chi tiết sản phẩm</h1>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <p>
+        <a href="/ctsp/view-create" class="btn btn-outline-success">Tạo mới</a>
+    </p>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Mã ctsp</th>
+      <th scope="col">Tên sản phẩm</th>
+      <th scope="col">Size</th>
+      <th scope="col">Màu</th>
+      <th scope="col">Loại</th>
+      <th scope="col">Đối tượng</th>
+      <th scope="col">Số lượng</th>
+      <th>Nơi sản xuất</th>
+      <th>Hoạt động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each ctsps}}
+    <tr>
+        <th scope="row">{{this.MaChiTietSanPham}}</th>
+        <td>{{this.MaSanPham_SanPham.TenSanPham}}</td>
+        <td>{{this.MaSize_Size.TenSize}}</td>
+        <td>{{this.MaMau_Mau.TenMau}}</td>
+        <td>{{this.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
+        <td>{{this.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>
+        <td>{{this.SoLuong}}</td>
+        <td>{{this.NSX}}</td>
+        <td>
+            <div class="action-btn" style="display: flex;">
+                <a href="/ctsp/view-edit/{{this.MaChiTietSanPham}}" class="btn btn-success" style="margin:2px 5px;">Chi tiết</a>
+                <a href="/ctsp/view-edit/{{this.MaChiTietSanPham}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
+                <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-mamau="{{this.MaChiTietSanPham}}" >Xóa</a>
+            </div> 
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td>
+            Bạn chưa có chi tiết sản phẩm nào.
+            <a href="">Click vào đây để thêm</a>
+        </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

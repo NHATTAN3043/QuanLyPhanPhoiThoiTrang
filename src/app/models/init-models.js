@@ -56,7 +56,7 @@ const initModels = (sequelize) => {
   PhanQuyen.hasMany(TaiKhoan, { as: "TaiKhoans", foreignKey: "MaQuyen"});
   ChiTietPhieuNhap.belongsTo(PhieuNhap, { as: "MaPhieuNhap_PhieuNhap", foreignKey: "MaPhieuNhap"});
   PhieuNhap.hasMany(ChiTietPhieuNhap, { as: "ChiTietPhieuNhaps", foreignKey: "MaPhieuNhap"});
-  ChiTietSanPham.belongsTo(Sanpham, { as: "MaSanPham_Sanpham", foreignKey: "MaSanPham"});
+  ChiTietSanPham.belongsTo(Sanpham, { as: "MaSanPham_SanPham", foreignKey: "MaSanPham"});
   Sanpham.hasMany(ChiTietSanPham, { as: "ChiTietSanPhams", foreignKey: "MaSanPham"});
   ChiTietSanPham.belongsTo(Size, { as: "MaSize_Size", foreignKey: "MaSize"});
   Size.hasMany(ChiTietSanPham, { as: "ChiTietSanPhams", foreignKey: "MaSize"});
