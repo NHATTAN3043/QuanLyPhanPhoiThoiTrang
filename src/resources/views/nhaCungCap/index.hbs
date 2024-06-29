@@ -1,0 +1,82 @@
+<div>
+    <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3> 
+    <div style="margin-top: 5px;">
+    <a href="/nhacungcap/view-create" class="btn btn-success">Thêm mới</a>
+    </div>
+  </div>
+<table class="table" style="margin-top: 10px;">
+  <thead>
+    <tr>
+      <th scope="col">Mã NCC</th>
+      <th scope="col">Tên nhà cung cấp</th>
+      <th scope="col">Địa chỉ</th>
+      <th scope="col">Số điện thoại</th>
+      <th scope="col">Nhân viên liên hệ</th>
+      <th scope="col">Hoạt động</th>
+    </tr>   
+  </thead>
+  <tbody>
+    {{#each nhacungcaps}}
+    <tr>
+      <td>{{this.MaNCC}}</td>
+      <td>{{this.TenNCC}}</td>
+      <td>{{this.DiaChi}}</td>
+      <td>{{this.SDT}}</td>
+      <td>{{this.NhanVienLienHe}}</td>
+      <td>
+        <div class="action-btn" style="display: flex;">
+        <a href="/nhacungcap/view-edit/{{this.MaNCC}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
+        <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-mamau="{{this.MaNCC}}" >Xóa</a>
+        </div>       
+      </td> 
+    </tr>
+    {{else}}
+    <tr>
+      <td colspan="4" class="text-center">
+        Bạn chưa có nhà cung cấp nào.
+        <a href="/nhacungcap/create">Click vào đây để tạo</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa nhà cung cấp</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-mau-delete" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete mau --}}
+<form name="form-delete-mau" method="POST"></form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var MaMau
+    const btn_comfirm_deleteMau = document.getElementById('btn-mau-delete')
+    const deleteForm = document.forms['form-delete-mau'] 
+    // Function get id from btn delete
+    $('#delete-mau-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    MaMau = button.data('mamau') // Extract info from data-* attributes
+    })
+    // handle btn confirm delete onclick
+    btn_comfirm_deleteMau.onclick = function(){
+      deleteForm.action = '/nhacungcap/delete/' + MaMau + '?_method=DELETE'
+      deleteForm.submit()
+    }
+
+  })
+</script>

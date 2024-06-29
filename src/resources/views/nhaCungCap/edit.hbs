@@ -1,0 +1,25 @@
+<div class="container">
+<h3>CẬP NHẬT MÀU</h3>
+<form method="POST" action="/nhacungcap/edit/{{nhacc.MaNCC}}?_method=PUT">
+  <div class="form-group">
+    <label >Tên nhà cung cấp</label>
+    <input type="text" class="form-control" value="{{nhacc.TenNCC}}" name="TenNCC">
+  </div>
+  <div class="form-group">
+    <label >Dịa chỉ</label>
+    <input type="text" class="form-control" value="{{nhacc.DiaChi}}" name="DiaChi">
+  </div>
+  <div class="form-group">
+    <label >Số điện thoại</label>
+    <input type="text" class="form-control" value="{{nhacc.SDT}}" name="SDT">
+  </div>
+  <div class="form-group">
+    <label >Nhân viên liên hệ</label>
+    <input type="text" class="form-control" value="{{nhacc.NhanVienLienHe}}" name="NhanVienLienHe">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/nhacungcap/index">Quay lại</a>
+</div>
+</div>

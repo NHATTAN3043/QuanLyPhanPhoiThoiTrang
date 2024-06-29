@@ -1,0 +1,17 @@
+<div class="container">
+<h3>TẠO PHIẾU NHẬP SẢN PHẨM MỚI</h3>
+<form method="POST" action="/phieunhap/create">
+   <div class="form-group">
+        <label class="control-label">Nhập từ nhà cung cấp</label>
+        <select class ="custom-select" name="MaNCC" required>
+            <option value="">Chọn nhà cung cấp</option>
+            {{#each nhacungcaps}}
+            <option value="{{this.MaNCC}}">{{this.MaNCC}} {{this.TenNCC}}</option>
+            {{else}}
+            <option value="">Không có lựa chọn</option>
+            {{/each}}
+        </select>
+    </div>
+  <button type="submit" class="btn btn-primary">Tạo</button>
+</form>
+</div>
