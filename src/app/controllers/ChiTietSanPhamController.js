@@ -131,6 +131,60 @@ class ChiTietSanPhamController {
             next(error)
         }
     }
+    // DELETE /ctsp/delete/:MaChiTietSanPham
+    async delete(req, res, next) {   
+        await models.ChiTietSanPham.destroy({
+            where: {
+                MaChiTietSanPham: req.params.MaChiTietSanPham
+            },
+            force: true
+        }).then(() => {
+            res.redirect('/ctsp/index')
+        }).catch((error) => {
+            next(error)
+            console.log('MESSEGE: DELETE CTSP ERROR!')
+        })
+   
+    }
+    // GET ctsp/detail/:MaChiTietSanPham
+    async detail(req, res, next) {
+        const MaCTSP = req.params.MaChiTietSanPham
+        const chiTietSanPham = await models.ChiTietSanPham.findOne({
+            include: [
+                {
+                    model: models.Size,
+                    as: 'MaSize_Size',
+                    required: true
+                },
+                {
+                    model: models.Mau,
+                    as: 'MaMau_Mau',
+                    required: true
+                },
+                {
+                    model: models.LoaiSanPham,
+                    as: 'MaLoaiSanPham_LoaiSanPham',
+                    required: true
+                },
+                {
+                    model: models.DoiTuong,
+                    as: 'MaDoiTuong_DoiTuong',
+                    required: true
+                },
+                {
+                    model: models.Sanpham,
+                    as: 'MaSanPham_SanPham',
+                    require: true
+                }
+            ],
+            where: {
+                MaChiTietSanPham: MaCTSP
+            }
+        })
+        res.render('./chiTietSanPham/detail', {
+            chiTietSanPham: sequelizeToObject(chiTietSanPham),           
+        })
+    }
 }   
 
 module.exports = new ChiTietSanPhamController

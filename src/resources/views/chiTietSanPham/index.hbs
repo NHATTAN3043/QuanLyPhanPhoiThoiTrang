@@ -33,7 +33,7 @@
         <td>{{this.NSX}}</td>
         <td>
             <div class="action-btn" style="display: flex;">
-                <a href="/ctsp/view-edit/{{this.MaChiTietSanPham}}" class="btn btn-success" style="margin:2px 5px;">Chi tiết</a>
+                <a href="/ctsp/detail/{{this.MaChiTietSanPham}}" class="btn btn-success" style="margin:2px 5px;">Chi tiết</a>
                 <a href="/ctsp/view-edit/{{this.MaChiTietSanPham}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
                 <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-mamau="{{this.MaChiTietSanPham}}" >Xóa</a>
             </div> 
@@ -49,3 +49,43 @@
     {{/each}}
   </tbody>
 </table>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa chi tiết sản phẩm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-mau-delete" type="button" class="btn btn-danger">Xóa vĩnh viễn</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete mau --}}
+<form name="form-delete-mau" method="POST"></form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var MaCTSP
+    const btn_comfirm_deleteMau = document.getElementById('btn-mau-delete')
+    const deleteForm = document.forms['form-delete-mau'] 
+    // Function get id from btn delete
+    $('#delete-mau-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    MaCTSP = button.data('mamau') // Extract info from data-* attributes
+    })
+    // handle btn confirm delete onclick
+    btn_comfirm_deleteMau.onclick = function(){
+      deleteForm.action = '/ctsp/delete/' + MaCTSP + '?_method=DELETE'
+      deleteForm.submit()
+    }
+
+  })
+</script>

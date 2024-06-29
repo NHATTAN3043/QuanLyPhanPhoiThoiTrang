@@ -7,5 +7,7 @@ router.get('/index', chiTietSanPhamController.index)
 router.get('/view-create', chiTietSanPhamController.viewCreate)
 router.get('/view-edit/:MaChiTietSanPham', chiTietSanPhamController.viewEdit)
 router.post('/create', chiTietSanPhamController.create)
-router.put('/edit/:MaChiTietSanPham', chiTietSanPhamController.edit )
+router.put('/edit/:MaChiTietSanPham', chiTietSanPhamController.edit)
+router.delete('/delete/:MaChiTietSanPham', chiTietSanPhamController.delete)
+router.get('/detail/:MaChiTietSanPham', chiTietSanPhamController.detail)
 module.exports = router
