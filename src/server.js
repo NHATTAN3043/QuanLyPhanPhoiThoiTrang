@@ -13,6 +13,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 configViewEgine(app)
 
 // Dùng để lấy dâta từ middleware
+// Sử dụng middleware để xử lý dữ liệu JSON
+app.use(express.json());
 app.use(express.urlencoded({
     extended: true
   }))

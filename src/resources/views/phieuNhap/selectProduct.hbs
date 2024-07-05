@@ -1,0 +1,149 @@
+<h2>Chọn sản phẩm</h2>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <p>
+        <a href="/ctsp/view-create" class="btn btn-outline-success">Tạo mới</a>
+    </p>
+</div>
+ <div class="mt-2 mb-2 d-flex">
+    <div class="form-check">
+        <input id="h-mapn" type="hidden" value="{{MaPN}}">
+        <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
+        <label class="form-check-label" for="defaultCheck1">
+          Chọn tất cả
+        </label>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm" id="btnSubmit" disabled="disabled" style="margin-left: 15px;">Thực hiện</button>
+  </div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Mã ctsp</th>
+      <th scope="col">Tên sản phẩm</th>
+      <th scope="col">Size</th>
+      <th scope="col">Màu</th>
+      <th scope="col">Loại</th>
+      <th scope="col">Đối tượng</th>    
+      <th>Nơi sản xuất</th>
+      <th>Hoạt động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each listProduct}}
+    <tr>
+        <td>
+          <div class="mt-2 mb-2">
+            <div class="form-check">
+                <input class="form-check-input ctsp-checkbox" type="checkbox" name="ctsps[]" value="{{this.MaChiTietSanPham}}">            
+            </div>
+        </div>
+        </td>
+        <th scope="row">{{this.MaChiTietSanPham}}</th>
+        <td>{{this.MaSanPham_SanPham.TenSanPham}}</td>
+        <td>{{this.MaSize_Size.TenSize}}</td>
+        <td>{{this.MaMau_Mau.TenMau}}</td>
+        <td>{{this.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
+        <td>{{this.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>      
+        <td>{{this.NSX}}</td>
+        <td>
+            <form method="POST" action="/phieunhap/addchitietphieunhap" >
+            <input type="hidden" value="{{this.MaChiTietSanPham}}" name="MaChiTietSanPham">
+            <input type="hidden" value="{{../MaPN}}" name="MaPhieuNhap">
+               <button type="submit" class="btn btn-primary">Chọn</button>
+            </form>   
+            {{!-- <a href="/phieunhap/details/?MaPhieuNhap={{../MaPN}}&MaChiTietSanPham={{this.MaChiTietSanPham}}" class="btn btn-primary">Chọn</a>          --}}
+        
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td>
+            Bạn chưa có chi tiết sản phẩm nào.
+            <a href="">Click vào đây để thêm</a>
+        </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- form post list san pham da chon --}}
+<form name="form-list-ctsp" method="POST" action="/phieunhap/addchitietphieunhaps">
+  <input type="hidden" id="MaPN" name="MaPhieuNhap" value="{{MaPN}}">
+  <input type="hidden" id="MaCTSPs" name="MaChiTietSanPham[]">
+</form>
+<a href="/phieunhap/details/{{MaPN}}">Quay lại</a>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var checkboxAll = $('#checkboxAll')
+    var checkboxItem = $('input[name="ctsps[]"]')
+    var checkboxItems = document.querySelectorAll('.ctsp-checkbox')
+    var btnSubmitAction = $('#btnSubmit')
+    var inputMaPN = document.getElementById('h-mapn')
+    var maPNF = document.getElementById('MaPN')
+    var listCTSP = document.getElementById('MaCTSPs')
+    var createListForm = document.forms['form-list-ctsp']
+
+    //checkbox-all change
+    checkboxAll.change(function () {
+      var isCheckedAll = $(this).prop('checked')
+      checkboxItem.prop('checked', isCheckedAll)
+      validateCheckboxToSubmit()     
+    })
+
+    //checkbox item change
+    checkboxItem.change(function () {
+      var isCheckedAll = checkboxItem.length === $('input[name="ctsps[]"]:checked').length
+      checkboxAll.prop('checked', isCheckedAll)
+      validateCheckboxToSubmit()
+    })
+    // Function disabled btn submit
+    function validateCheckboxToSubmit() {
+      var countChecked = $('input[name="ctsps[]"]:checked').length
+      if (countChecked > 0) { 
+        btnSubmitAction.attr('disabled', false)
+      }else{
+        btnSubmitAction.attr('disabled', true)
+
+      }
+    }
+     // Xử lý khi nhấn nút "Thực hiện"
+    btnSubmitAction.on('click', function() {
+      const checkedIds = [];
+      checkboxItem.each(function() {
+        if ($(this).is(':checked')) {
+          checkedIds.push($(this).val());
+        }
+      });
+      // Get MaPhieuNhap from addSp form
+      const MaPhieuNhap = inputMaPN.value
+      console.log(checkedIds)
+      console.log(MaPhieuNhap)
+      if (checkedIds.length > 0) {
+        // Gán mảng ctsp cho thẻ input 
+        listCTSP.value = JSON.stringify(checkedIds)
+        createListForm.submit()
+        // 
+        // POST CTPN
+        /**
+        fetch('http://localhost:8080/phieunhap/addchitietphieunhaps', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            MaPhieuNhap: MaPhieuNhap,
+            MaChiTietSanPham: checkedIds
+          })
+        }).then(response => {
+          if (response.ok) {
+            console.log('success to add details');
+          } else {
+            console.error('Failed to add details');
+          }
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+        */
+      }
+    });
+  })
+</script>

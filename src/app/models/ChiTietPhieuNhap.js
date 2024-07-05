@@ -24,7 +24,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     GiaNhap: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DOUBLE,
+      allowNull: true
+    },
+    ThanhTien: {
+      type: DataTypes.DOUBLE,
       allowNull: true
     }
   }, {

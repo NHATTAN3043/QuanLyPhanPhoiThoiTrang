@@ -23,6 +23,14 @@ var formatDate = function(date) {
     // Trả về chuỗi định dạng dd/mm/yyyy hh:mm
     return `${hours}:${minutes} ${day}/${month}/${year}`;
   };
+// Hàm tính tổng tiền
+// Handlebars.registerHelper('priceTotal', function(price, quantity){
+//   let total = price * quantity
+//   return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+// })
+Handlebars.registerHelper('formatPrice', function(price) {
+  return !price? 0 : price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+})
 Handlebars.registerHelper('formatDate', formatDate)
 // Định nghĩa helper eqSelect
 Handlebars.registerHelper('eqSelect', function(a, b) {

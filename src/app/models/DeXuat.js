@@ -36,6 +36,7 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'DeXuat',
     schema: 'dbo',
     hasTrigger: true,
+    paranoid: true,
     timestamps: true,
     indexes: [
       {

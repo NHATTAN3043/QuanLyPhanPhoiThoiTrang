@@ -6,7 +6,7 @@
         <select class ="custom-select" name="MaNCC" required>
             <option value="">Chọn nhà cung cấp</option>
             {{#each nhacungcaps}}
-            <option value="{{this.MaNCC}}">{{this.MaNCC}} {{this.TenNCC}}</option>
+            <option value="{{this.MaNCC}}">{{this.TenNCC}}-Địa chỉ:{{this.DiaChi}}</option>
             {{else}}
             <option value="">Không có lựa chọn</option>
             {{/each}}

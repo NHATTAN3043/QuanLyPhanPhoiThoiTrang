@@ -1,11 +1,7 @@
 <div>
-    <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3>
-     <div style="margin-top: 5px;">
-    <a href="/phieunhap/trash">Thùng rác</a>
-    <a style="color: blue;">(2)</a>
-    </div> 
+    <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3> 
     <div style="margin-top: 5px;">
-    <a href="/phieunhap/view-create" class="btn btn-success">Thêm mới</a>
+    <a href="/phieunhap/index">Quay lại</a>
     </div>
   </div>
 <table class="table" style="margin-top: 10px;">
@@ -28,8 +24,8 @@
       <td>{{formatDate this.NgayNhapHang}}</td>
       <td>
         <div class="action-btn" style="display: flex;">
-        <a href="/phieunhap/detailCTPX/{{this.MaPhieuNhap}}" class="btn btn-primary" style="margin:2px 5px;">Chi tiết</a>
-        <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-maphieunhap="{{this.MaPhieuNhap}}" >Xóa</a>
+        <a href="" class="btn btn-restore" style="color: rgb(36, 8, 216);" data-maphieunhap="{{this.MaPhieuNhap}}">Khôi phục</a>
+        <a href="" class="btn" style="color: red;" data-toggle="modal" data-target="#delete-mau-modal" data-maphieunhap="{{this.MaPhieuNhap}}" >Xóa vĩnh viễn</a>
         </div>       
       </td> 
     </tr>
@@ -58,18 +54,22 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
-        <button id="btn-mau-delete" type="button" class="btn btn-danger">Xóa</button>
+        <button id="btn-mau-delete" type="button" class="btn btn-danger">Xóa vĩnh viễn</button>
       </div>
     </div>
   </div>
 </div>
 {{!-- Form delete mau --}}
 <form name="form-delete-mau" method="POST"></form>
+{{!-- Form restore phieunhap --}}
+<form name="form-restore-phieunhap" method="POST"></form> 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var MaPN
     const btn_comfirm_deleteMau = document.getElementById('btn-mau-delete')
     const deleteForm = document.forms['form-delete-mau'] 
+    const restoreForm = document.forms['form-restore-phieunhap']
+    const btn_restore = $('.btn-restore')
     // Function get id from btn delete
     $('#delete-mau-modal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
@@ -77,9 +77,16 @@
     })
     // handle btn confirm delete onclick
     btn_comfirm_deleteMau.onclick = function(){
-      deleteForm.action = '/phieunhap/softDelete/' + MaPN + '?_method=DELETE'
+      deleteForm.action = '/phieunhap/destroy/' + MaPN + '?_method=DELETE'
       deleteForm.submit()
     }
-
+    // handle btn-restore click
+    btn_restore.click(function(e){
+        e.preventDefault()
+        // Get id by Jquery 
+        const maPNR = $(this).data('maphieunhap')
+        restoreForm.action = '/phieunhap/restore/' + maPNR +'?_method=PATCH'
+        restoreForm.submit()
+    })
   })
 </script>

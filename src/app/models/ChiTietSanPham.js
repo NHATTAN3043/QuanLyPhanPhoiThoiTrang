@@ -71,7 +71,8 @@ module.exports = function(sequelize, DataTypes) {
     sequelize,
     tableName: 'ChiTietSanPham',
     schema: 'dbo',
-    timestamps: false,
+    paranoid: true,
+    timestamps: true,
     indexes: [
       {
         name: "PK__ChiTietS__A6B023B0ACE59A8F",
