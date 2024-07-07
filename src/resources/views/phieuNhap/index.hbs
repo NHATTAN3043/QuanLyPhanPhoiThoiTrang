@@ -1,48 +1,88 @@
-<div>
-    <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3>
-     <div style="margin-top: 5px;">
-    <a href="/phieunhap/trash">Thùng rác</a>
-    <a style="color: blue;">(2)</a>
-    </div> 
+  <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3>
     <div style="margin-top: 5px;">
-    <a href="/phieunhap/view-create" class="btn btn-success">Thêm mới</a>
+      <a href="/phieunhap/trash">Thùng rác</a>
+      <a style="color: blue;">({{count}})</a>
+    </div> 
+    <div class="mt-2">
+      <a href="/phieunhap/view-create" class="btn btn-success">Thêm mới</a>
     </div>
-  </div>
-<table class="table" style="margin-top: 10px;">
-  <thead>
-    <tr>
-      <th scope="col">Mã PN</th>
-      <th scope="col">Tên NCC</th>
-      <th scope="col">Địa chỉ</th>
-      <th scope="col">Thời gian nhập</th>
-      <th scope="col">Hoạt động</th>
+    <!-- form tim kiem va loc -->
+    <form method="GET" action="/phieunhap/index" class="action-right">
+      <div class="form-group" style="width: fit-content;">        
+          <select class ="custom-select" name="MaNCC" style="width: fit-content">   
+              <option value="">-- Chọn nhà cung cấp --</option>
+              {{#each nhaCungCaps}}
+              <option value="{{this.MaNCC}}">{{this.TenNCC}}</option>
+              {{else}}
+              <option value="">Không có nhà cung cấp</option>
+              {{/each}}
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i></button>
+      </div>
+    </form>
+  <!-- end -->  
+<form method="POST" action="/phieunhap/handle-indexform-actions">
+  <div class="mt-2 mb-2 d-flex">
+      <div class="action-left">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
+              <label class="form-check-label" for="defaultCheck1">
+                Chọn tất cả
+              </label>
+          </div>
+          <div class="form-group selectlist">     
+              <select class="form-control form-control-sm" id="exampleFormControlSelect1" name="action" required="required">
+                <option value="">--hành động--</option>
+                <option value="delete">Xóa</option>                
+              </select>
+          </div>
+            <button type="submit" class="btn btn-primary btn-sm" id="btnSubmit" disabled="disabled">Thực hiện</button>
+      </div>
+    </div>
+  <table class="table" style="margin-top: 10px;">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Mã PN</th>
+        <th scope="col">Tên NCC</th>
+        <th scope="col">Địa chỉ</th>
+        <th scope="col">Thời gian nhập</th>
+        <th scope="col">Hoạt động</th>
 
-    </tr>   
-  </thead>
-  <tbody>
-    {{#each phieunhaps}}
-    <tr>
-      <td>{{this.MaPhieuNhap}}</td>
-      <td>{{this.MaNCC_NhaCungCap.TenNCC}}</td>
-      <td>{{this.MaNCC_NhaCungCap.DiaChi}}</td>
-      <td>{{formatDate this.NgayNhapHang}}</td>
-      <td>
-        <div class="action-btn" style="display: flex;">
-        <a href="/phieunhap/detailCTPX/{{this.MaPhieuNhap}}" class="btn btn-primary" style="margin:2px 5px;">Chi tiết</a>
-        <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-maphieunhap="{{this.MaPhieuNhap}}" >Xóa</a>
-        </div>       
-      </td> 
-    </tr>
-    {{else}}
-    <tr>
-      <td colspan="4" class="text-center">
-        Bạn chưa có phiếu nhập nào.
-        <a href="/phieunhap/create">Click vào đây để tạo</a>
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+      </tr>   
+    </thead>
+    <tbody>
+      {{#each phieuNhaps}}
+      <tr>
+        <td>
+          <div class="mt-2 mb-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="maphieunhaps[]" value="{{this.MaPhieuNhap}}">            
+            </div>
+          </div>
+        </td>
+        <td>{{this.MaPhieuNhap}}</td>
+        <td>{{this.MaNCC_NhaCungCap.TenNCC}}</td>
+        <td>{{this.MaNCC_NhaCungCap.DiaChi}}</td>
+        <td>{{formatDate this.createdAt}}</td>
+        <td>
+          <div class="action-btn" style="display: flex;">
+          <a href="/phieunhap/detailCTPX/{{this.MaPhieuNhap}}" class="btn btn-primary" style="margin:2px 5px;">Chi tiết</a>
+          <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-maphieunhap="{{this.MaPhieuNhap}}" >Xóa</a>
+          </div>       
+        </td> 
+      </tr>
+      {{else}}
+      <tr>
+        <td colspan="6" class="text-center">
+          Bạn chưa có phiếu nhập nào.
+          <a href="/phieunhap/create">Click vào đây để tạo</a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</form>
 {{!-- form confirm delete --}}
 <div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -69,7 +109,12 @@
   document.addEventListener('DOMContentLoaded', function() {
     var MaPN
     const btn_comfirm_deleteMau = document.getElementById('btn-mau-delete')
-    const deleteForm = document.forms['form-delete-mau'] 
+    const deleteForm = document.forms['form-delete-mau']
+    const checkboxAll = $('#checkboxAll')
+    const checkboxItem = $('input[name="maphieunhaps[]"]')
+    const btnSubmitAction = $('#btnSubmit')
+    const selectNCC = document.getElementById('MaNCC')
+
     // Function get id from btn delete
     $('#delete-mau-modal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
@@ -80,6 +125,22 @@
       deleteForm.action = '/phieunhap/softDelete/' + MaPN + '?_method=DELETE'
       deleteForm.submit()
     }
-
+    // function handle checkbox and btn submit
+    handleCheckbox({
+      checkboxAll: '#checkboxAll',
+      checkboxItem: 'input[name="maphieunhaps[]"]',
+      btnSubmitAction: '#btnSubmit'
+    })
+    // filter nha cung cap
+    /**
+    selectNCC.addEventListener('change', function() {
+      var valueNCC = selectNCC.value
+      console.log(valueNCC)
+      const url = `http://localhost:8080/phieunhap/index?_filter&ncc=${encodeURIComponent(valueNCC)}`
+          fetch(url)
+            .then(() => {console.log('success')})
+            .catch(() => {console.log('Error')})
+    })
+    */
   })
 </script>

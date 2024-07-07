@@ -9,3 +9,27 @@ h1 {
 .container {
     justify-content: center;
 }
+
+/* Loại bỏ margin phải của thẻ cuối cùng */
+.action-btn a:last-child {
+    margin-right: 0;
+}
+.selectlist {
+    width: 150px;
+    margin: 0 10px;
+}
+
+.action-right {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-left: auto;
+    float: right;
+
+}
+
+.action-left {
+    display: flex;
+    align-items: center;
+    margin-right:auto ;
+}

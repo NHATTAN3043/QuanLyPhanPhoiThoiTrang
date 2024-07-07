@@ -10,24 +10,65 @@ const { Op } = require('sequelize');
 class PhieuNhapController {
     // GET phieunhap/index
     async index(req, res, next) {
-        await models.PhieuNhap.findAll({
-            include: [
-                {
-                    model: models.NhaCungCap,
-                    as: 'MaNCC_NhaCungCap',
-                    required: true
-                },
-            ],
-            order: [['NgayNhapHang', 'DESC']]
-        }).then((phieunhaps) => {
-            res.render('./phieuNhap/index', {
-                phieunhaps: mutipleSequelizeToObject(phieunhaps)
+        try {
+            const ncc = req.query.MaNCC
+            const nhaCungCaps = await models.NhaCungCap.findAll({})
+            var findAllPN
+            if (!ncc){
+                findAllPN = await models.PhieuNhap.findAll({
+                    include: [
+                        {
+                            model: models.NhaCungCap,
+                            as: 'MaNCC_NhaCungCap',
+                            required: true
+                        },
+                    ],
+                    order: [['createdAt', 'DESC']]
+                })
+            }else{
+                findAllPN = await models.PhieuNhap.findAll({
+                    where: {
+                        MaNCC: ncc,
+                    },
+                    include: [
+                        {
+                            model: models.NhaCungCap,
+                            as: 'MaNCC_NhaCungCap',
+                            required: true
+                        },
+                    ],
+                    order: [['createdAt', 'DESC']]
+                })
+            }
+           
+            // count phieunhap in trash
+            const countDeleted = await models.PhieuNhap.count({
+                where: {
+                    deletedAt: {
+                      [Sequelize.Op.not]: null
+                    }
+                  },
+                  paranoid: false,
             })
-        }).catch((error) => {
-            next(error)           
-        })
-            
+            // Promise handle all
+            Promise.all([findAllPN, countDeleted])
+                .then(([phieuNhaps, count]) => {
+                    res.render('./phieuNhap/index', {
+                        phieuNhaps: mutipleSequelizeToObject(phieuNhaps),
+                        nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
+                        count,                      
+                    })
+                }).catch((error) => {
+                    console.log(error)
+                    next(error)
+                })             
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+        
     }
+    // GET /phieunhap/trash
     async trash(req, res, next){
         await models.PhieuNhap.findAll({
             where: {
@@ -65,7 +106,7 @@ class PhieuNhapController {
             const phieuNhap = await models.PhieuNhap.create({
                 MaNCC: req.body.MaNCC,
                 // NgayNhapHang: new Date(),
-                NgayNhapHang: Sequelize.fn('GETDATE'),
+                //NgayNhapHang: Sequelize.fn('GETDATE'),
             })
             const maPN = phieuNhap.MaPhieuNhap
             res.redirect(`/phieunhap/details/${maPN}`)        
@@ -124,7 +165,6 @@ class PhieuNhapController {
             phieuNhap: sequelizeToObject(phieuNhap),
             nhaCungCap: sequelizeToObject(nhaCungCap), 
             chiTietPhieuNhaps: mutipleSequelizeToObject(chiTietPhieuNhaps),
-            tongTien: total,
         })
         } catch (error) {
             console.log(error)
@@ -349,6 +389,53 @@ class PhieuNhapController {
         } catch (error) {
             
         }
+    }
+    // POST /phieunhap/handle-indexform-action
+    async handleIndexFormActions(req, res, next){
+        switch (req.body.action) {
+            case 'delete':
+                await models.PhieuNhap.destroy({
+                    where: {
+                        MaPhieuNhap:{
+                            [Op.in]: req.body.maphieunhaps,
+                        }
+                    }
+                }).then(() => {
+                    res.redirect('back')
+                }).catch((error) => { next(error)})
+                break;
+            case 'restore':
+                await models.PhieuNhap.restore({
+                    where: {
+                        MaPhieuNhap:{
+                            [Op.in]: req.body.maphieunhaps,
+                        }
+                    }
+                }).then(() => {
+                    res.redirect('back')
+                }).catch(() =>{
+                    console.log(error)
+                    next(error)
+                })
+                break;
+            case 'delete-force':
+                await models.PhieuNhap.destroy({
+                    where: {
+                        MaPhieuNhap:{
+                            [Op.in]: req.body.maphieunhaps,
+                        },
+                    },
+                    force: true,
+                }).then(() => {
+                    res.redirect('back')
+                }).catch((error) => {
+                    console.log(error)
+                    next(error)
+                })
+                break;
+            default: res.json({messge: "Action is not found!"})
+                break;
+        }     
     }
 }
 

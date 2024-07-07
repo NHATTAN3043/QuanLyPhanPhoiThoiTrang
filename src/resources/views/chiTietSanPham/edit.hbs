@@ -12,7 +12,7 @@
                             <label class="control-label">Tên sản phẩm</label>
                             <select class ="custom-select" name="MaSanPham" required>   
                                 {{#each sanphams}}
-                                    <option value="{{this.MaSanPham}}" {{#if (eqSelect this.MaSanPham chiTietSanPham.MaSanPham)}}selected{{/if}}>
+                                    <option value="{{this.MaSanPham}}" {{#if (eqSelect this.MaSanPham ../chiTietSanPham.MaSanPham)}}selected{{/if}}>
                                         {{this.TenSanPham}}
                                     </option>
                                 {{else}}
@@ -24,7 +24,7 @@
                             <label class="control-label">Size</label>
                             <select class ="custom-select" name="MaSize" required>
                                 {{#each sizes}}
-                                <option value="{{this.MaSize}}" {{#if (eqSelect this.MaSize chiTietSanPham.MaSize)}}selected{{/if}}>
+                                <option value="{{this.MaSize}}" {{#if (eqSelect this.MaSize ../chiTietSanPham.MaSize)}}selected{{/if}}>
                                 {{this.TenSize}}
                                 </option>
                                 {{else}}
@@ -36,7 +36,7 @@
                             <label class="control-label">Màu</label>
                             <select class ="custom-select" name="MaMau" required>
                                 {{#each maus}}
-                                <option value="{{this.MaMau}}" {{#if (eqSelect this.MaMau chiTietSanPham.MaMau)}}selected{{/if}}>{{this.TenMau}}</option>
+                                <option value="{{this.MaMau}}" {{#if (eqSelect this.MaMau ../chiTietSanPham.MaMau)}}selected{{/if}}>{{this.TenMau}}</option>
                                 {{else}}
                                 <option value="">Không có màu</option>
                                 {{/each}}
@@ -46,7 +46,7 @@
                             <label class="control-label">Loại sản phẩm</label>
                             <select class ="custom-select" name="MaLoaiSanPham" required>
                                 {{#each loaisanphams}}
-                                <option value="{{this.MaLoaiSanPham}}" {{#if (eqSelect this.MaLoaiSanPham chiTietSanPham.MaLoaiSanPham)}}selected{{/if}}>{{this.TenLoaiSanPham}}</option>
+                                <option value="{{this.MaLoaiSanPham}}" {{#if (eqSelect this.MaLoaiSanPham ../chiTietSanPham.MaLoaiSanPham)}}selected{{/if}}>{{this.TenLoaiSanPham}}</option>
                                 {{else}}
                                 <option value="">Không có loại </option>
                                 {{/each}}
@@ -56,14 +56,14 @@
                             <label class="control-label">Đối tượng khách hàng</label>
                             <select class ="custom-select" name="MaDoiTuong" required>
                                 {{#each doituongs}}
-                                <option value="{{this.MaDoiTuong}}" {{#if (eqSelect this.MaDoiTuong chiTietSanPham.MaDoiTuong)}}selected{{/if}}>{{this.TenDoiTuong}}</option>
+                                <option value="{{this.MaDoiTuong}}" {{#if (eqSelect this.MaDoiTuong ../chiTietSanPham.MaDoiTuong)}}selected{{/if}}>{{this.TenDoiTuong}}</option>
                                 {{else}}
                                 <option value="">Không có đối tượng </option>
                                 {{/each}}
                             </select>
                         </div>
                     {{!-- input soLuong hidden --}}
-                        <input class="form-control" name="SoLuong" type="hidden"/>
+                        <input class="form-control" name="SoLuong" type="hidden" value="{{chiTietSanPham.SoLuong}}"/>
                         
                         <div class="form-group">
                             <label class="control-label">Hình ảnh</label>

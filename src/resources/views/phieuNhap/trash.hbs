@@ -1,16 +1,32 @@
-<div>
-    <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3> 
-    <div style="margin-top: 5px;">
-    <a href="/phieunhap/index">Quay lại</a>
+<form method="POST" action="/phieunhap/handle-indexform-actions">
+  <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3> 
+  <div style="margin-top: 5px;">
+  <a href="/phieunhap/index">Quay lại</a>
+  </div>
+  <div class="mt-2 mb-2 d-flex">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
+        <label class="form-check-label" for="defaultCheck1">
+          Chọn tất cả
+        </label>
     </div>
+    <div class="form-group selectlist">     
+        <select class="form-control form-control-sm" id="exampleFormControlSelect1" name="action" required="required">
+          <option value="">--hành động--</option>
+          <option value="restore">Khôi phục</option>
+          <option value="delete-force">Xóa vĩnh viễn</option>                
+        </select>
+    </div>
+      <button type="submit" class="btn btn-primary btn-sm" id="btnSubmit" disabled="disabled">Thực hiện</button>
   </div>
 <table class="table" style="margin-top: 10px;">
   <thead>
     <tr>
+      <th scope="col">#</th>
       <th scope="col">Mã PN</th>
       <th scope="col">Tên NCC</th>
       <th scope="col">Địa chỉ</th>
-      <th scope="col">Thời gian nhập</th>
+      <th scope="col">Thời gian xóa</th>
       <th scope="col">Hoạt động</th>
 
     </tr>   
@@ -18,10 +34,17 @@
   <tbody>
     {{#each phieunhaps}}
     <tr>
+      <td>
+          <div class="mt-2 mb-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="maphieunhaps[]" value="{{this.MaPhieuNhap}}">            
+            </div>
+          </div>
+      </td>
       <td>{{this.MaPhieuNhap}}</td>
       <td>{{this.MaNCC_NhaCungCap.TenNCC}}</td>
       <td>{{this.MaNCC_NhaCungCap.DiaChi}}</td>
-      <td>{{formatDate this.NgayNhapHang}}</td>
+      <td>{{formatDate this.deletedAt}}</td>
       <td>
         <div class="action-btn" style="display: flex;">
         <a href="" class="btn btn-restore" style="color: rgb(36, 8, 216);" data-maphieunhap="{{this.MaPhieuNhap}}">Khôi phục</a>
@@ -31,14 +54,15 @@
     </tr>
     {{else}}
     <tr>
-      <td colspan="4" class="text-center">
-        Bạn chưa có phiếu nhập nào.
-        <a href="/phieunhap/create">Click vào đây để tạo</a>
+      <td colspan="6" class="text-center">
+        Bạn chưa xóa phiếu nhập nào.
+        <a href="/phieunhap/index">Quay lại</a>
       </td>
     </tr>
     {{/each}}
   </tbody>
 </table>
+</form>
 {{!-- form confirm delete --}}
 <div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -87,6 +111,12 @@
         const maPNR = $(this).data('maphieunhap')
         restoreForm.action = '/phieunhap/restore/' + maPNR +'?_method=PATCH'
         restoreForm.submit()
+    })
+    // function handle checkbox and btn submit
+    handleCheckbox({
+      checkboxAll: '#checkboxAll',
+      checkboxItem: 'input[name="maphieunhaps[]"]',
+      btnSubmitAction: '#btnSubmit'
     })
   })
 </script>

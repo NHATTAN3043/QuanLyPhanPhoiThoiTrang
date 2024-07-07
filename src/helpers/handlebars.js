@@ -34,7 +34,7 @@ Handlebars.registerHelper('formatPrice', function(price) {
 Handlebars.registerHelper('formatDate', formatDate)
 // Định nghĩa helper eqSelect
 Handlebars.registerHelper('eqSelect', function(a, b) {
-    return a === b;
+    return a === b? true: false;
 });
 
 module.exports = Handlebars;

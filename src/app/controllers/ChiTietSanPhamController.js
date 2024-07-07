@@ -71,7 +71,6 @@ class ChiTietSanPhamController {
     }
     // GET /ctsp/view-edit/:MaChiTietSanPham
     async viewEdit(req, res, next) {
-        const MaCTSP = req.params.MaChiTietSanPham
         const chiTietSanPham = await models.ChiTietSanPham.findOne({
             include: [
                 {
@@ -101,7 +100,7 @@ class ChiTietSanPhamController {
                 }
             ],
             where: {
-                MaChiTietSanPham: MaCTSP
+                MaChiTietSanPham: req.params.MaChiTietSanPham
             }
         })
         const sanphams = await models.Sanpham.findAll({})
