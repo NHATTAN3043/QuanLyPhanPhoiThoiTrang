@@ -1,8 +1,23 @@
-<form method="POST" action="/phieunhap/handle-indexform-actions">
   <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3> 
   <div style="margin-top: 5px;">
   <a href="/phieunhap/index">Quay lại</a>
   </div>
+   <!-- form tim kiem va loc -->
+    <form method="GET" action="/phieunhap/trash" class="action-right">
+      <div class="form-group" style="width: fit-content;">        
+          <select class ="custom-select" name="MaNCC" style="width: fit-content">   
+              <option value="">-- Chọn nhà cung cấp --</option>
+              {{#each nhaCungCaps}}
+              <option value="{{this.MaNCC}}">{{this.TenNCC}}</option>
+              {{else}}
+              <option value="">Không có nhà cung cấp</option>
+              {{/each}}
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i></button>
+      </div>
+    </form>
+  <!-- end -->  
+<form method="POST" action="/phieunhap/handle-indexform-actions">
   <div class="mt-2 mb-2 d-flex">
     <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
@@ -21,7 +36,7 @@
   </div>
 <table class="table" style="margin-top: 10px;">
   <thead>
-    <tr>
+    <tr class="table-warning">
       <th scope="col">#</th>
       <th scope="col">Mã PN</th>
       <th scope="col">Tên NCC</th>
@@ -63,6 +78,36 @@
   </tbody>
 </table>
 </form>
+{{!-- pagination page --}}
+<nav class="app-pagination mt-2">
+    <ul class="pagination justify-content-center">
+        {{#if (gt currentPage 1)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/trash?page={{decrement currentPage}}">Previous</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#pagination currentPage totalPages}}
+        <li class="page-item {{#if active}}active{{/if}}">
+            <a class="page-link" href="/phieunhap/trash?page={{number}}">{{number}}</a>
+        </li>
+        {{/pagination}}
+
+        {{#if (lt currentPage totalPages)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/trash?page={{increment currentPage}}">Next</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
 {{!-- form confirm delete --}}
 <div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

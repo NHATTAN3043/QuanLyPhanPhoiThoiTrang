@@ -41,7 +41,7 @@
     </div>
   <table class="table" style="margin-top: 10px;">
     <thead>
-      <tr>
+      <tr class="table-primary">
         <th scope="col">#</th>
         <th scope="col">Mã PN</th>
         <th scope="col">Tên NCC</th>
@@ -83,6 +83,35 @@
     </tbody>
   </table>
 </form>
+<nav class="app-pagination mt-2">
+    <ul class="pagination justify-content-center">
+        {{#if (gt currentPage 1)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/index?page={{decrement currentPage}}">Previous</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#pagination currentPage totalPages}}
+        <li class="page-item {{#if active}}active{{/if}}">
+            <a class="page-link" href="/phieunhap/index?page={{number}}">{{number}}</a>
+        </li>
+        {{/pagination}}
+
+        {{#if (lt currentPage totalPages)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/index?page={{increment currentPage}}">Next</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
 {{!-- form confirm delete --}}
 <div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

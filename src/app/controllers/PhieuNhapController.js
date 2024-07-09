@@ -12,35 +12,32 @@ class PhieuNhapController {
     async index(req, res, next) {
         try {
             const ncc = req.query.MaNCC
-            const nhaCungCaps = await models.NhaCungCap.findAll({})
-            var findAllPN
-            if (!ncc){
-                findAllPN = await models.PhieuNhap.findAll({
-                    include: [
-                        {
-                            model: models.NhaCungCap,
-                            as: 'MaNCC_NhaCungCap',
-                            required: true
-                        },
-                    ],
-                    order: [['createdAt', 'DESC']]
-                })
-            }else{
-                findAllPN = await models.PhieuNhap.findAll({
-                    where: {
-                        MaNCC: ncc,
+            const page = parseInt(req.query.page) || 1
+            const limit = 6
+            const offset = (page - 1) * limit
+            // selected all Nha cung cap
+            const nhaCungCaps = await models.NhaCungCap.findAll({})                 
+            // check ncc 
+            let whereNhaCC = {}
+            if (ncc){
+                whereNhaCC.MaNCC = ncc
+            }    
+            // selected all Phieu Nhap
+            var findAllPN = await models.PhieuNhap.findAll({
+                where: whereNhaCC,
+                include: [
+                    {
+                        model: models.NhaCungCap,
+                        as: 'MaNCC_NhaCungCap',
+                        required: true
                     },
-                    include: [
-                        {
-                            model: models.NhaCungCap,
-                            as: 'MaNCC_NhaCungCap',
-                            required: true
-                        },
-                    ],
-                    order: [['createdAt', 'DESC']]
-                })
-            }
-           
+                ],
+                order: [['createdAt', 'DESC']],
+                limit: limit,
+                offset: offset,
+            }) 
+            // count phieunhap in index
+            const countAllPN = await models.PhieuNhap.count({})                   
             // count phieunhap in trash
             const countDeleted = await models.PhieuNhap.count({
                 where: {
@@ -50,18 +47,15 @@ class PhieuNhapController {
                   },
                   paranoid: false,
             })
-            // Promise handle all
-            Promise.all([findAllPN, countDeleted])
-                .then(([phieuNhaps, count]) => {
-                    res.render('./phieuNhap/index', {
-                        phieuNhaps: mutipleSequelizeToObject(phieuNhaps),
-                        nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
-                        count,                      
-                    })
-                }).catch((error) => {
-                    console.log(error)
-                    next(error)
-                })             
+            // count total page
+            const totalPages = Math.ceil(countAllPN / limit)
+            res.render('./phieuNhap/index', {
+                phieuNhaps: mutipleSequelizeToObject(findAllPN),
+                nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
+                count: countDeleted,
+                currentPage: page,
+                totalPages,
+            })     
         } catch (error) {
             console.log(error)
             next(error)
@@ -70,28 +64,72 @@ class PhieuNhapController {
     }
     // GET /phieunhap/trash
     async trash(req, res, next){
-        await models.PhieuNhap.findAll({
-            where: {
-                deletedAt: {
-                  [Sequelize.Op.not]: null
-                }
-              },
-            include: [
-                {
-                    model: models.NhaCungCap,
-                    as: 'MaNCC_NhaCungCap',
-                    required: true
+        try {
+            const ncc = req.query.MaNCC
+            const page = parseInt(req.query.page) || 1
+            const limit = 6
+            const offset = (page - 1) * limit
+             // selected all Nha cung cap
+            const nhaCungCaps = await models.NhaCungCap.findAll({}) 
+             // check ncc 
+             let whereNhaCC = {}
+             if (ncc){
+                 whereNhaCC.MaNCC = ncc
+             }    
+             // findAll deleted phieu nhap   
+            const phieuNhapDeleted = await models.PhieuNhap.findAll({
+                where: {
+                    [Op.and]: [
+                        {
+                            deletedAt:
+                            {
+                                [Sequelize.Op.not]: null
+                            }
+                        },
+                        whereNhaCC,
+                    ]                   
                 },
-            ],
-            paranoid: false,
-            order: [['deletedAt', 'DESC']]
-        }).then((phieunhaps) => {
-            res.render('./phieuNhap/trash', {
-                phieunhaps: mutipleSequelizeToObject(phieunhaps)
+                include: [
+                    {
+                        model: models.NhaCungCap,
+                        as: 'MaNCC_NhaCungCap',
+                        required: true
+                    },
+                ],
+                paranoid: false,
+                order: [['deletedAt', 'DESC']],
+                limit: limit,
+                offset: offset,
             })
-        }).catch((error) => {
-            next(error)           
-        })
+            // .then((phieunhaps) => {
+            //     res.render('./phieuNhap/trash', {
+            //         phieunhaps: mutipleSequelizeToObject(phieunhaps),
+            //         nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
+            //     })
+            // }).catch((error) => {
+            //     next(error)           
+            // })
+            // count phieunhap in trash
+            const countDeleted = await models.PhieuNhap.count({
+                where: {
+                    deletedAt: {
+                      [Sequelize.Op.not]: null
+                    }
+                  },
+                  paranoid: false,
+            })
+            // count total page
+            const totalPages = Math.ceil(countDeleted / limit)
+            res.render('./phieuNhap/trash', {
+                phieunhaps: mutipleSequelizeToObject(phieuNhapDeleted),
+                nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
+                currentPage: page,
+                totalPages,
+            })
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
     }
     // GET /phieunhap/view-create
     async viewCreate(req, res, next) {
