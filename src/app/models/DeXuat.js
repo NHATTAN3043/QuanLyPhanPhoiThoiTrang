@@ -9,7 +9,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     Tieude: {
       type: DataTypes.STRING(100),
-      allowNull: true
+      allowNull: true,
+      collate: 'SQL_Latin1_General_CP1_CI_AI' // Đặt collate cho trường nếu cần thiết
     },
     NgayDeXuat: {
       type: DataTypes.DATE,
@@ -17,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     TrangThai: {
       type: DataTypes.STRING(15),
-      allowNull: true
+      allowNull: true,
     },
     Created: {
       type: DataTypes.CHAR(1),

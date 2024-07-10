@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     TenLoaiSanPham: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
     }
   }, {
     sequelize,

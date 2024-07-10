@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     LyDoDeXuat: {
       type: DataTypes.STRING(500),
-      allowNull: true
+      allowNull: true,    
     },
     SoLuongDeXuat: {
       type: DataTypes.INTEGER,
@@ -29,7 +29,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     TrangThaiDeXuat: {
       type: DataTypes.STRING(2),
-      allowNull: true
+      allowNull: true,
     },
     SoLuongDuyet: {
       type: DataTypes.INTEGER,

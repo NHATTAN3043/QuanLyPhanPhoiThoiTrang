@@ -2,61 +2,124 @@ const sequelize = require('../../config/connectDB') // require connection
 var initModels = require('../models/init-models')
 const { mutipleSequelizeToObject, sequelizeToObject } = require('../../util/sequelize');
 var models = initModels(sequelize);
+const { sanphams, maus, doituongs, sizes, loaisanphams } = require('../../util/data_select')
+const { Op, Sequelize } = require('sequelize');
+const removeVietnameseTones = require('../../util/remove_vn')
 
 class ChiTietSanPhamController {
     // GET /ctsp/index
-    index(req, res, next) {
-        models.ChiTietSanPham.findAll({
-            include: [
-                {
-                    model: models.Size,
-                    as: 'MaSize_Size',
-                    required: true
-                },
-                {
-                    model: models.Mau,
-                    as: 'MaMau_Mau',
-                    required: true
-                },
-                {
-                    model: models.LoaiSanPham,
-                    as: 'MaLoaiSanPham_LoaiSanPham',
-                    required: true
-                },
-                {
-                    model: models.DoiTuong,
-                    as: 'MaDoiTuong_DoiTuong',
-                    required: true
-                },
-                {
-                    model: models.Sanpham,
-                    as: 'MaSanPham_SanPham',
-                    require: true
+    async index(req, res, next) {
+        try {
+            const searchConditions = req.query
+            let whereConditions = []
+            let includeConditions = []
+            var searchQuery=''
+            let i = 0
+            if (Object.keys(searchConditions).length != 0) {
+               if (searchConditions.MaSize) {
+                    whereConditions.push({MaSize: searchConditions.MaSize})
+               }
+               if (searchConditions.MaMau) {
+                    whereConditions.push({MaMau: searchConditions.MaMau})
+               }
+               if (searchConditions.MaLoai) {
+                    whereConditions.push({MaLoaiSanPham: searchConditions.MaLoai})
+               }
+               if (searchConditions.MaDoiTuong) {
+                    whereConditions.push({MaDoiTuong: searchConditions.MaDoiTuong})
                 }
-            ]
-        })
-            .then((ctsps) => {
-                res.render('./chiTietSanPham/index', {
-                    ctsps: mutipleSequelizeToObject(ctsps)               
-                })
-            }).catch((error) => {
-                next(error)
+                if (searchConditions.searchText) {
+                    searchQuery = removeVietnameseTones(searchConditions.searchText)                                  
+                    includeConditions.push(
+                        {
+                            model: models.Size,
+                            as: 'MaSize_Size',
+                            required: true,                                               
+                        },
+                        {
+                            model: models.Mau,
+                            as: 'MaMau_Mau',
+                            required: true,                                                
+                        },
+                        {
+                            model: models.LoaiSanPham,
+                            as: 'MaLoaiSanPham_LoaiSanPham',
+                            required: true,                 
+                        },
+                        {
+                            model: models.DoiTuong,
+                            as: 'MaDoiTuong_DoiTuong',
+                            required: true,                          
+                        },
+                        {
+                            model: models.Sanpham,
+                            as: 'MaSanPham_SanPham',
+                            require: true,
+                            where:               
+                            {
+                                TenSanPham: {
+                                    [Op.like]: `%${searchQuery}%`
+                                }
+                            }
+                        }
+                    )             
+                }
+            }
+            const ctsps = await models.ChiTietSanPham.findAll({
+                where: {
+                    [Op.and]: whereConditions,
+                },
+                include: includeConditions.length > 0 ? includeConditions : [
+                    {
+                        model: models.Size,
+                        as: 'MaSize_Size',
+                        required: true
+                    },
+                    {
+                        model: models.Mau,
+                        as: 'MaMau_Mau',
+                        required: true
+                    },
+                    {
+                        model: models.LoaiSanPham,
+                        as: 'MaLoaiSanPham_LoaiSanPham',
+                        required: true,                      
+                    },
+                    {
+                        model: models.DoiTuong,
+                        as: 'MaDoiTuong_DoiTuong',
+                        required: true
+                    },
+                    {
+                        model: models.Sanpham,
+                        as: 'MaSanPham_SanPham',
+                        require: true,
+                    }
+                ]
             })
+               
+            res.render('./chiTietSanPham/index', {
+                ctsps: mutipleSequelizeToObject(ctsps),
+                sizes:  mutipleSequelizeToObject(await sizes()),
+                maus:  mutipleSequelizeToObject(await maus()),
+                loais:  mutipleSequelizeToObject(await loaisanphams()),
+                doituongs:  mutipleSequelizeToObject(await doituongs()),
+                originalTextSearch: searchConditions.searchText,               
+            })              
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+        
     }
      // GET /doituong/view-create
      async viewCreate(req, res, next) {
-        const sanphams = await models.Sanpham.findAll({})
-        const sizes = await models.Size.findAll({})
-        const maus = await models.Mau.findAll({})
-        const loaisanphams = await models.LoaiSanPham.findAll({})
-        const doituongs = await models.DoiTuong.findAll({})
-
         res.render('./chiTietSanPham/create', {
-            sanphams: mutipleSequelizeToObject(sanphams),
-            sizes: mutipleSequelizeToObject(sizes),
-            maus: mutipleSequelizeToObject(maus),
-            loaisanphams: mutipleSequelizeToObject(loaisanphams),
-            doituongs: mutipleSequelizeToObject(doituongs),
+            sanphams: mutipleSequelizeToObject(await sanphams()),
+            sizes: mutipleSequelizeToObject(await sizes()),
+            maus: mutipleSequelizeToObject(await maus()),
+            loaisanphams: mutipleSequelizeToObject(await loaisanphams()),
+            doituongs: mutipleSequelizeToObject(await doituongs()),
 
         })
     }
@@ -103,18 +166,13 @@ class ChiTietSanPhamController {
                 MaChiTietSanPham: req.params.MaChiTietSanPham
             }
         })
-        const sanphams = await models.Sanpham.findAll({})
-        const sizes = await models.Size.findAll({})
-        const maus = await models.Mau.findAll({})
-        const loaisanphams = await models.LoaiSanPham.findAll({})
-        const doituongs = await models.DoiTuong.findAll({})
         res.render('./chiTietSanPham/edit', {
             chiTietSanPham: sequelizeToObject(chiTietSanPham),
-            sanphams: mutipleSequelizeToObject(sanphams),
-            sizes: mutipleSequelizeToObject(sizes),
-            maus: mutipleSequelizeToObject(maus),
-            loaisanphams: mutipleSequelizeToObject(loaisanphams),
-            doituongs: mutipleSequelizeToObject(doituongs),
+            sanphams: mutipleSequelizeToObject(await sanphams()),
+            sizes: mutipleSequelizeToObject(await sizes()),
+            maus: mutipleSequelizeToObject(await maus()),
+            loaisanphams: mutipleSequelizeToObject(await loaisanphams()),
+            doituongs: mutipleSequelizeToObject(await doituongs()),
         })
     }
     // PUT /ctsp/edit/:MaChiTietSanPham

@@ -9,11 +9,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     TenNCC: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
+      collate: 'SQL_Latin1_General_CP1_CI_AI' // Đặt collate cho trường nếu cần thiết
     },
     DiaChi: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
     },
     SDT: {
       type: DataTypes.CHAR(10),
@@ -21,7 +22,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     NhanVienLienHe: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
+      collate: 'SQL_Latin1_General_CP1_CI_AI' // Đặt collate cho trường nếu cần thiết
     }
   }, {
     sequelize,

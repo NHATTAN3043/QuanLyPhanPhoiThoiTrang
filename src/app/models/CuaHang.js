@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     TenCuahang: {
       type: DataTypes.STRING(50),
-      allowNull: true
+      allowNull: true,
     },
     DiaChi: {
       type: DataTypes.STRING(100),

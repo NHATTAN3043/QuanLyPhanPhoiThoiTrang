@@ -2,10 +2,11 @@ const sequelize = require('../../config/connectDB') // require connection
 var initModels = require('../models/init-models')
 const { mutipleSequelizeToObject, sequelizeToObject } = require('../../util/sequelize');
 const {totalPrice } = require('../../util/pricetotal')
-const { DATE } = require('sequelize');
 var models = initModels(sequelize);
 const Sequelize = require('sequelize')
 const { Op } = require('sequelize');
+const { sanphams, maus, doituongs, sizes, loaisanphams, nhacungcaps } = require('../../util/data_select')
+
 
 class PhieuNhapController {
     // GET phieunhap/index
@@ -14,9 +15,7 @@ class PhieuNhapController {
             const ncc = req.query.MaNCC
             const page = parseInt(req.query.page) || 1
             const limit = 6
-            const offset = (page - 1) * limit
-            // selected all Nha cung cap
-            const nhaCungCaps = await models.NhaCungCap.findAll({})                 
+            const offset = (page - 1) * limit                 
             // check ncc 
             let whereNhaCC = {}
             if (ncc){
@@ -51,7 +50,7 @@ class PhieuNhapController {
             const totalPages = Math.ceil(countAllPN / limit)
             res.render('./phieuNhap/index', {
                 phieuNhaps: mutipleSequelizeToObject(findAllPN),
-                nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
+                nhaCungCaps: mutipleSequelizeToObject(await nhacungcaps()),
                 count: countDeleted,
                 currentPage: page,
                 totalPages,
@@ -68,9 +67,7 @@ class PhieuNhapController {
             const ncc = req.query.MaNCC
             const page = parseInt(req.query.page) || 1
             const limit = 6
-            const offset = (page - 1) * limit
-             // selected all Nha cung cap
-            const nhaCungCaps = await models.NhaCungCap.findAll({}) 
+            const offset = (page - 1) * limit 
              // check ncc 
              let whereNhaCC = {}
              if (ncc){
@@ -100,15 +97,7 @@ class PhieuNhapController {
                 order: [['deletedAt', 'DESC']],
                 limit: limit,
                 offset: offset,
-            })
-            // .then((phieunhaps) => {
-            //     res.render('./phieuNhap/trash', {
-            //         phieunhaps: mutipleSequelizeToObject(phieunhaps),
-            //         nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
-            //     })
-            // }).catch((error) => {
-            //     next(error)           
-            // })
+            })           
             // count phieunhap in trash
             const countDeleted = await models.PhieuNhap.count({
                 where: {
@@ -122,7 +111,7 @@ class PhieuNhapController {
             const totalPages = Math.ceil(countDeleted / limit)
             res.render('./phieuNhap/trash', {
                 phieunhaps: mutipleSequelizeToObject(phieuNhapDeleted),
-                nhaCungCaps: mutipleSequelizeToObject(nhaCungCaps),
+                nhaCungCaps: mutipleSequelizeToObject(await nhacungcaps()),
                 currentPage: page,
                 totalPages,
             })
@@ -132,10 +121,9 @@ class PhieuNhapController {
         }
     }
     // GET /phieunhap/view-create
-    async viewCreate(req, res, next) {
-        const nhacungcaps = await models.NhaCungCap.findAll({}) 
+    async viewCreate(req, res, next) {      
         res.render('./phieuNhap/create', {
-            nhacungcaps: mutipleSequelizeToObject(nhacungcaps)
+            nhacungcaps: mutipleSequelizeToObject(await nhacungcaps())
         })
     }
     // POST /phieunhap/create
