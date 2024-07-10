@@ -1,0 +1,83 @@
+<h3>DANH SÁCH ĐỀ XUẤT</h3>
+
+<p>
+    <a href="/dexuat/view-create" class="btn btn-primary">Tạo đề xuất</a>
+</p>
+
+<div style="display: flex; justify-content: center; align-items: center; padding: 16px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <form method="get" action="" class="docs-search-form row gx-3 align-items-center" style="display: flex; flex-wrap: nowrap; align-items: center; margin: 0; width: 100%; max-width: 800px; gap: 10px;">
+
+        <div class="col-auto" style="flex-grow: 1;">
+            <input type="text" id="search-docs" name="searchdocs" value="" class="form-control search-docs" placeholder="Tìm kiếm..." style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid #ced4da;">
+        </div>
+        <div class="col-auto" style="flex-grow: 0;">
+            <select class="form-select" name="MaCuaHang" style="width: auto;">
+                <option value="">Chọn cửa hàng</option>
+                {{#each cuahangs}}
+                <option value="{{this.MaCuaHang}}">{{this.TenCuahang}}</option>
+                {{else}}
+                <option value="">Không có cửa hàng nào</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-auto" style="flex-grow: 0;">
+            <select class="form-select" name="TrangThai" style="width: auto;">
+                <option value="">Trạng thái</option>
+                {{#each trangThai}}
+                <option value="{{this.value}}">{{this.text}}</option>
+                {{else}}
+                <option value="">Không có trạng thái</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-auto" style="flex-grow: 0;">
+            <button type="submit" class="btn app-btn-secondary" style="padding: 8px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px;">Tìm kiếm</button>
+        </div>
+    </form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Mã đề xuất
+            </th>
+            <th>
+                Tiêu đề 
+            </th>
+            <th>
+                Thời gian đề xuất
+            </th>
+            <th>
+                Cửa hàng
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each dexuats}}
+        <tr>
+            <td>{{this.MaDeXuat}}</td>
+            <td>{{this.Tieude}}</td>
+            <td>{{formatDate this.createdAt}}</td>
+            <td>{{this.TrangThai}}</td>
+            <td>
+                <a class="btn btn-outline-info">Xem chi tiết</a>
+                 <a class="btn btn-outline-danger">Xóa</a>
+            </td>
+        </tr>
+        {{else}}
+        <tr>
+            <td colspan="5" style="text-align: center;">
+                Bạn chưa có đề xuất nào.
+                <a href="">thêm mới</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+

@@ -1,0 +1,34 @@
+<h3>TẠO ĐỀ XUẤT</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="POST" action="/dexuat/create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Tiêu đề</label>
+                <textarea class="form-control" name="Tieude"></textarea>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaCuaHang" class="control-label">Cửa hàng</label>
+                <select class="form-select" name="MaCuaHang">
+                    {{#each cuahangs}}
+                        <option value="{{this.MaCuaHang}}">{{this.TenCuahang}}</option>
+                    {{else}}
+                        <option value="">Bạn không có cửa hàng nào</option>
+                    {{/each}}
+                </select>
+            </div>                                                        
+            <input name="TrangThai" type="hidden" value="Chờ Duyệt"/>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Tạo</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="" >Quay lại</a>
+</div>
+
+ 

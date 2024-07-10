@@ -4,7 +4,7 @@ var models = initModels(sequelize);
 const Sequelize = require('sequelize')
 const { Op } = require('sequelize');
 
-const sanphams = async function(){
+const sanphams = async function() {
     try {
         const list = await models.Sanpham.findAll({})
         return list
@@ -15,7 +15,7 @@ const sanphams = async function(){
     
 }
 
-const maus = async function(){
+const maus = async function() {
     try {
         const list = await models.Mau.findAll({})
         return list
@@ -25,7 +25,7 @@ const maus = async function(){
     }
 }
 
-const sizes = async function(){
+const sizes = async function() {
     try {
         const list = await models.Size.findAll({})
         return list
@@ -35,7 +35,7 @@ const sizes = async function(){
     }
 }
 
-const loaisanphams = async function(){
+const loaisanphams = async function() {
     try {
         const list = await models.LoaiSanPham.findAll({})
         return list
@@ -45,7 +45,7 @@ const loaisanphams = async function(){
     }
 }
 
-const doituongs = async function(){
+const doituongs = async function() {
     try {
         const list = await models.DoiTuong.findAll({})
         return list
@@ -55,7 +55,7 @@ const doituongs = async function(){
     }
 }
 
-const nhacungcaps = async function(){
+const nhacungcaps = async function() {
     try {
         const list = await models.NhaCungCap.findAll({})
         return list
@@ -65,5 +65,14 @@ const nhacungcaps = async function(){
     }
 }
 
+const cuahangs = async function() {
+    try {
+        const list = await models.CuaHang.findAll({})
+        return list
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
 
-module.exports = { sanphams, maus, doituongs, sizes, loaisanphams, nhacungcaps }
+module.exports = { sanphams, maus, doituongs, sizes, loaisanphams, nhacungcaps, cuahangs }

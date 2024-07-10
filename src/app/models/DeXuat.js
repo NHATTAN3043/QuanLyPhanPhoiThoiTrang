@@ -8,21 +8,16 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     Tieude: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(150),
       allowNull: true,
-      collate: 'SQL_Latin1_General_CP1_CI_AI' // Đặt collate cho trường nếu cần thiết
     },
     NgayDeXuat: {
       type: DataTypes.DATE,
       allowNull: true
     },
     TrangThai: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING(100),
       allowNull: true,
-    },
-    Created: {
-      type: DataTypes.CHAR(1),
-      allowNull: true
     },
     MaCuaHang: {
       type: DataTypes.INTEGER,
