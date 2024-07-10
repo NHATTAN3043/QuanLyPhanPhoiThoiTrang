@@ -4,12 +4,55 @@
         <a href="/ctsp/view-create" class="btn btn-outline-success">Tạo mới</a>
     </p>
 </div>
+<div class="action-right">
+<!-- form tim kiem va loc -->
+    <form method="GET" action="/phieunhap/chonsanpham/{{MaPN}}">
+      <div class="form-group" style="width: fit-content;">
+          <button type="button" id="btn-refresh" class="btn"><i class="fa-solid fa-arrows-rotate" style="color: rgb(0, 58, 128); height: 25px; width: 25px;"></i></button>
+          <input type="text" name="searchText" id="input_search" value="{{originalTextSearch}}" placeholder=" Nhập tại đây..." style="height: 35px; width: 200px; " />                                  
+          <select class ="custom-select" name="MaSize" style="width: fit-content">   
+              <option value="">-- Chọn size --</option>
+              {{#each sizes}}
+              <option value="{{this.MaSize}}">{{this.TenSize}}</option>
+              {{else}}
+              <option value="">Không có size</option>
+              {{/each}}
+          </select>
+          <select class ="custom-select" name="MaMau" style="width: fit-content">   
+              <option value="">-- Chọn màu --</option>
+              {{#each maus}}
+              <option value="{{this.MaMau}}">{{this.TenMau}}</option>
+              {{else}}
+              <option value="">Không có màu</option>
+              {{/each}}
+          </select>
+          <select class ="custom-select" name="MaLoai" style="width: fit-content">   
+              <option value="">-- Chọn loai --</option>
+              {{#each loais}}
+              <option value="{{this.MaLoaiSanPham}}">{{this.TenLoaiSanPham}}</option>
+              {{else}}
+              <option value="">Không có loại</option>
+              {{/each}}
+          </select>
+          <select class ="custom-select" name="MaDoiTuong" style="width: fit-content">   
+              <option value="">-- Chọn đối tượng --</option>
+              {{#each doituongs}}
+              <option value="{{this.DoiTuong}}">{{this.TenDoiTuong}}</option>
+              {{else}}
+              <option value="">Không có đối tượng</option>
+              {{/each}}
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i></button>
+      </div>
+    </form>
+  <!-- end --> 
+</div>  
  <div class="mt-2 mb-2 d-flex">
     <div class="form-check">
         <input id="h-mapn" type="hidden" value="{{MaPN}}">
         <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
         <label class="form-check-label" for="defaultCheck1">
-          Chọn tất cả
+          All
         </label>
     </div>
     <button type="button" class="btn btn-primary btn-sm" id="btnSubmit" disabled="disabled" style="margin-left: 15px;">Thực hiện</button>
@@ -17,7 +60,7 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col"></th>
+      <th scope="col">#</th>
       <th scope="col">Mã ctsp</th>
       <th scope="col">Tên sản phẩm</th>
       <th scope="col">Size</th>
@@ -65,11 +108,44 @@
     {{/each}}
   </tbody>
 </table>
+
+{{!-- pagination page --}}
+<nav class="app-pagination mt-2">
+    <ul class="pagination justify-content-center">
+        {{#if (gt currentPage 1)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/chonsanpham/{{MaPN}}?page={{decrement currentPage}}">Previous</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#pagination currentPage totalPages}}
+        <li class="page-item {{#if active}}active{{/if}}">
+            <a class="page-link" href="/phieunhap/chonsanpham/{{../MaPN}}?page={{number}}">{{number}}</a>
+        </li>
+        {{/pagination}}
+
+        {{#if (lt currentPage totalPages)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/chonsanpham/{{MaPN}}?page={{increment currentPage}}">Next</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
 {{!-- form post list san pham da chon --}}
 <form name="form-list-ctsp" method="POST" action="/phieunhap/addchitietphieunhaps">
   <input type="hidden" id="MaPN" name="MaPhieuNhap" value="{{MaPN}}">
   <input type="hidden" id="MaCTSPs" name="MaChiTietSanPham[]">
 </form>
+{{!-- form refesh --}}
+<form name="refresh-form" method="GET" action="/phieunhap/chonsanpham/{{MaPN}}"></form>
 <a href="/phieunhap/details/{{MaPN}}">Quay lại</a>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -81,7 +157,9 @@
     var maPNF = document.getElementById('MaPN')
     var listCTSP = document.getElementById('MaCTSPs')
     var createListForm = document.forms['form-list-ctsp']
-
+    const refresh_form = document.forms['refresh-form']
+    const btn_refresh = document.getElementById('btn-refresh')
+    const inputSearch = document.getElementById('input_search')
     //checkbox-all change
     checkboxAll.change(function () {
       var isCheckedAll = $(this).prop('checked')
@@ -121,29 +199,12 @@
         // Gán mảng ctsp cho thẻ input 
         listCTSP.value = JSON.stringify(checkedIds)
         createListForm.submit()
-        // 
-        // POST CTPN
-        /**
-        fetch('http://localhost:8080/phieunhap/addchitietphieunhaps', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            MaPhieuNhap: MaPhieuNhap,
-            MaChiTietSanPham: checkedIds
-          })
-        }).then(response => {
-          if (response.ok) {
-            console.log('success to add details');
-          } else {
-            console.error('Failed to add details');
-          }
-        }).catch(error => {
-          console.error('Error:', error);
-        });
-        */
       }
     });
+     // handle refresh data of search and filter
+      btn_refresh.onclick = function(){
+      inputSearch.value = ''
+      refresh_form.submit()
+    }
   })
 </script>

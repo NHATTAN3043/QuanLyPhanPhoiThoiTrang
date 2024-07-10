@@ -6,6 +6,7 @@ var models = initModels(sequelize);
 const Sequelize = require('sequelize')
 const { Op } = require('sequelize');
 const { sanphams, maus, doituongs, sizes, loaisanphams, nhacungcaps } = require('../../util/data_select')
+const removeVietnameseTones = require('../../util/remove_vn')
 
 
 class PhieuNhapController {
@@ -258,8 +259,73 @@ class PhieuNhapController {
     // GET /phieunhap/chonsanpham/:MaPhieuNhap
     async selectProduct(req, res, next) {
         const MaPN = req.params.MaPhieuNhap
+        const searchConditions = req.query
+        let whereConditions = []
+        let includeConditions = []
+        var searchQuery=''
+        const page = parseInt(req.query.page) || 1
+        const limit = 6
+        const offset = (page - 1) * limit
+        // count chitietsanpham
+        const countAllctsp = await models.ChiTietSanPham.count({})
+        // chia trang
+        const totalPages = Math.ceil(countAllctsp / limit)
+    // conditions filter
+    if (Object.keys(searchConditions).length != 0) {
+        if (searchConditions.MaSize) {
+                whereConditions.push({MaSize: searchConditions.MaSize})
+        }
+        if (searchConditions.MaMau) {
+                whereConditions.push({MaMau: searchConditions.MaMau})
+        }
+        if (searchConditions.MaLoai) {
+                whereConditions.push({MaLoaiSanPham: searchConditions.MaLoai})
+        }
+        if (searchConditions.MaDoiTuong) {
+                whereConditions.push({MaDoiTuong: searchConditions.MaDoiTuong})
+            }
+            if (searchConditions.searchText) {
+                searchQuery = removeVietnameseTones(searchConditions.searchText)                                  
+                includeConditions.push(
+                    {
+                        model: models.Size,
+                        as: 'MaSize_Size',
+                        required: true,                                               
+                    },
+                    {
+                        model: models.Mau,
+                        as: 'MaMau_Mau',
+                        required: true,                                                
+                    },
+                    {
+                        model: models.LoaiSanPham,
+                        as: 'MaLoaiSanPham_LoaiSanPham',
+                        required: true,                 
+                    },
+                    {
+                        model: models.DoiTuong,
+                        as: 'MaDoiTuong_DoiTuong',
+                        required: true,                          
+                    },
+                    {
+                        model: models.Sanpham,
+                        as: 'MaSanPham_SanPham',
+                        require: true,
+                        where:               
+                        {
+                            TenSanPham: {
+                                [Op.like]: `%${searchQuery}%`
+                            }
+                        }
+                    }
+                )             
+            }
+        }
         models.ChiTietSanPham.findAll({
-            include: [
+            where: {
+                [Op.and]: whereConditions,
+            },
+            include: includeConditions.length > 0 ? includeConditions : [
                 {
                     model: models.Size,
                     as: 'MaSize_Size',
@@ -285,11 +351,20 @@ class PhieuNhapController {
                     as: 'MaSanPham_SanPham',
                     require: true
                 }
-            ]
-        }).then((listProduct) => {
+            ],
+            limit: limit,
+            offset: offset,
+        }).then( async (listProduct) => {
             res.render('./phieuNhap/selectProduct', {
                 listProduct: mutipleSequelizeToObject(listProduct),
+                sizes:  mutipleSequelizeToObject(await sizes()),
+                maus:  mutipleSequelizeToObject(await maus()),
+                loais:  mutipleSequelizeToObject(await loaisanphams()),
+                doituongs:  mutipleSequelizeToObject(await doituongs()),
+                originalTextSearch: searchConditions.searchText,
                 MaPN: MaPN,
+                currentPage: page,
+                totalPages,   
             })
         }).catch((error) => {
             next(error)

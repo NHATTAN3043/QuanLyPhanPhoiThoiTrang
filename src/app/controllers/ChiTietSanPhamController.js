@@ -14,7 +14,14 @@ class ChiTietSanPhamController {
             let whereConditions = []
             let includeConditions = []
             var searchQuery=''
-            let i = 0
+            const page = parseInt(req.query.page) || 1
+            const limit = 6
+            const offset = (page - 1) * limit
+            // count chitietsanpham
+            const countAllctsp = await models.ChiTietSanPham.count({})
+            // chia trang
+            const totalPages = Math.ceil(countAllctsp / limit)
+            // conditions filter
             if (Object.keys(searchConditions).length != 0) {
                if (searchConditions.MaSize) {
                     whereConditions.push({MaSize: searchConditions.MaSize})
@@ -95,7 +102,9 @@ class ChiTietSanPhamController {
                         as: 'MaSanPham_SanPham',
                         require: true,
                     }
-                ]
+                ],
+                limit: limit,
+                offset: offset,
             })
                
             res.render('./chiTietSanPham/index', {
@@ -104,7 +113,9 @@ class ChiTietSanPhamController {
                 maus:  mutipleSequelizeToObject(await maus()),
                 loais:  mutipleSequelizeToObject(await loaisanphams()),
                 doituongs:  mutipleSequelizeToObject(await doituongs()),
-                originalTextSearch: searchConditions.searchText,               
+                originalTextSearch: searchConditions.searchText, 
+                currentPage: page,
+                totalPages,              
             })              
         } catch (error) {
             console.log(error)
