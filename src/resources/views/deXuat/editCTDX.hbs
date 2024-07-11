@@ -1,0 +1,28 @@
+<h1>Edit</h1>
+
+<h4>CHI TIẾT ĐỀ XUẤT</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="POST" action="/dexuat/editCTDX?_method=PATCH" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="MaDeXuat" value="{{CTDX.MaDeXuat}}" />
+            <input type="hidden" name="MaChiTietSanPham" value="{{CTDX.MaChiTietSanPham}}"/>
+            <div class="form-group">
+                <label name="LyDoDeXuat" class="control-label">Lý do đề xuất</label>
+                <textarea name="LyDoDeXuat" class="form-control" required>{{CTDX.LyDoDeXuat}}</textarea>
+            </div>
+            <div class="form-group">
+                <label name="SoLuongDeXuat" class="control-label">Số lượng đề xuất</label>
+                <input name="SoLuongDeXuat" class="form-control" required value="{{CTDX.SoLuongDeXuat}}"/>          
+            </div>         
+            <div class="form-group">
+               <button type="submit" class="btn btn-success">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="/dexuat/details/{{CTDX.MaDeXuat}}">Quay lại</a>
+</div>

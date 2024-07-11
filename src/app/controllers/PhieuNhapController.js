@@ -190,6 +190,7 @@ class PhieuNhapController {
         })
         res.render('./phieuNhap/details', {
             phieuNhap: sequelizeToObject(phieuNhap),
+            chiTietPhieuNhaps: mutipleSequelizeToObject(chiTietPhieuNhaps),
             nhaCungCap: sequelizeToObject(nhaCungCap), 
             chiTietPhieuNhaps: mutipleSequelizeToObject(chiTietPhieuNhaps),
         })

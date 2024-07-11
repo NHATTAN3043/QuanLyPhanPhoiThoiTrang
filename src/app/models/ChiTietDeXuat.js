@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     TrangThaiDeXuat: {
-      type: DataTypes.STRING(2),
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
     SoLuongDuyet: {

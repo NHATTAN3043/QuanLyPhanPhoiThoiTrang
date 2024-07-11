@@ -74,13 +74,376 @@ class DeXuatController {
             const maDeXuat = req.params.MaDeXuat
             const deXuat = await models.DeXuat.findByPk(maDeXuat)
             const cuaHangDX = await models.CuaHang.findByPk(deXuat.MaCuaHang)
+            const chitietdexuats = await models.ChiTietDeXuat.findAll({
+                where: {
+                    MaDeXuat: maDeXuat,               
+                },
+                include: [
+                    {
+                        model: models.ChiTietSanPham,
+                        as: 'MaChiTietSanPham_ChiTietSanPham',
+                        required: true,
+                        include: [
+                            {
+                                model: models.Size,
+                                as:"MaSize_Size",                          
+                                required: true,
+                            },
+                            {
+                                model: models.Sanpham,
+                                as: "MaSanPham_SanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.Mau,
+                                as: "MaMau_Mau",
+                                required: true,
+                            },
+                            {
+                                model: models.LoaiSanPham,
+                                as: "MaLoaiSanPham_LoaiSanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.DoiTuong,
+                                as: "MaDoiTuong_DoiTuong",
+                                required: true,
+                            }
+                        ]          
+                    }
+                ]
+
+            })
             res.render('./deXuat/details', {
                 deXuat: sequelizeToObject(deXuat),
                 cuaHangDX: sequelizeToObject(cuaHangDX),
+                chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
             })
         } catch (error) {
             next(error)
         }
+    }
+    // GET /dexuat/chonsanpham/:MaDeXuat
+    async selectProduct(req, res, next) {
+        const message = req.query.message
+        const MaDX = req.params.MaDeXuat
+        const searchConditions = req.query
+        let whereConditions = []
+        let includeConditions = []
+        var searchQuery=''
+        const page = parseInt(req.query.page) || 1
+        const limit = 6
+        const offset = (page - 1) * limit
+        // count chitietsanpham
+        const countAllctsp = await models.ChiTietSanPham.count({})
+        // chia trang
+        const totalPages = Math.ceil(countAllctsp / limit)
+    // conditions filter
+    if (Object.keys(searchConditions).length != 0) {
+        if (searchConditions.MaSize) {
+                whereConditions.push({MaSize: searchConditions.MaSize})
+        }
+        if (searchConditions.MaMau) {
+                whereConditions.push({MaMau: searchConditions.MaMau})
+        }
+        if (searchConditions.MaLoai) {
+                whereConditions.push({MaLoaiSanPham: searchConditions.MaLoai})
+        }
+        if (searchConditions.MaDoiTuong) {
+                whereConditions.push({MaDoiTuong: searchConditions.MaDoiTuong})
+            }
+            if (searchConditions.searchText) {
+                searchQuery = removeVietnameseTones(searchConditions.searchText)                                  
+                includeConditions.push(
+                    {
+                        model: models.Size,
+                        as: 'MaSize_Size',
+                        required: true,                                               
+                    },
+                    {
+                        model: models.Mau,
+                        as: 'MaMau_Mau',
+                        required: true,                                                
+                    },
+                    {
+                        model: models.LoaiSanPham,
+                        as: 'MaLoaiSanPham_LoaiSanPham',
+                        required: true,                 
+                    },
+                    {
+                        model: models.DoiTuong,
+                        as: 'MaDoiTuong_DoiTuong',
+                        required: true,                          
+                    },
+                    {
+                        model: models.Sanpham,
+                        as: 'MaSanPham_SanPham',
+                        require: true,
+                        where:               
+                        {
+                            TenSanPham: {
+                                [Op.like]: `%${searchQuery}%`
+                            }
+                        }
+                    }
+                )             
+            }
+        }
+        models.ChiTietSanPham.findAll({
+            where: {
+                [Op.and]: whereConditions,
+            },
+            include: includeConditions.length > 0 ? includeConditions : [
+                {
+                    model: models.Size,
+                    as: 'MaSize_Size',
+                    required: true
+                },
+                {
+                    model: models.Mau,
+                    as: 'MaMau_Mau',
+                    required: true
+                },
+                {
+                    model: models.LoaiSanPham,
+                    as: 'MaLoaiSanPham_LoaiSanPham',
+                    required: true
+                },
+                {
+                    model: models.DoiTuong,
+                    as: 'MaDoiTuong_DoiTuong',
+                    required: true
+                },
+                {
+                    model: models.Sanpham,
+                    as: 'MaSanPham_SanPham',
+                    require: true
+                }
+            ],
+            limit: limit,
+            offset: offset,
+        }).then( async (listProduct) => {
+            res.render('./deXuat/selectProduct', {
+                listProduct: mutipleSequelizeToObject(listProduct),
+                sizes:  mutipleSequelizeToObject(await sizes()),
+                maus:  mutipleSequelizeToObject(await maus()),
+                loais:  mutipleSequelizeToObject(await loaisanphams()),
+                doituongs:  mutipleSequelizeToObject(await doituongs()),
+                originalTextSearch: searchConditions.searchText,
+                MaDX: MaDX,
+                currentPage: page,
+                totalPages,
+                message: message,   
+            })
+        }).catch((error) => {
+            next(error)
+        })
+    }
+    // GET /dexuat/lydodexuat
+    async proposedReason(req, res, next) {
+        try {
+            const MaDeXuat = req.query.MaDeXuat
+            const MaChiTietSanPham = req.query.MaChiTietSanPham
+            const CTSP = await models.ChiTietSanPham.findOne({
+                where: { MaChiTietSanPham: MaChiTietSanPham},
+                include: [
+                    {
+                        model: models.Size,
+                        as: 'MaSize_Size',
+                        required: true
+                    },
+                    {
+                        model: models.Mau,
+                        as: 'MaMau_Mau',
+                        required: true
+                    },
+                    {
+                        model: models.LoaiSanPham,
+                        as: 'MaLoaiSanPham_LoaiSanPham',
+                        required: true
+                    },
+                    {
+                        model: models.DoiTuong,
+                        as: 'MaDoiTuong_DoiTuong',
+                        required: true
+                    },
+                    {
+                        model: models.Sanpham,
+                        as: 'MaSanPham_SanPham',
+                        require: true
+                    }
+                ]
+            })
+            res.render('./deXuat/proposedReason', {
+                MaDeXuat: MaDeXuat,
+                MaChiTietSanPham: MaChiTietSanPham,
+                CTSP: sequelizeToObject(CTSP),
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    // POST /dexuat/themchitietdexuat
+    async addChiTietDeXuat(req, res, next) {
+        try {
+            const availableCTDX = await models.ChiTietDeXuat.findOne({
+                where: {
+                    MaChiTietSanPham: req.body.MaChiTietSanPham,
+                    MaDeXuat: req.body.MaDeXuat,
+                }
+            })
+            if(!availableCTDX) {
+                const ctdx = await models.ChiTietDeXuat.create(req.body)
+                res.redirect(`/dexuat/details/${ctdx.MaDeXuat}`)
+            }else{
+                res.redirect(`/dexuat/chonsanpham/${req.body.MaDeXuat}?message=You had chossen the product!`)                                   
+            }
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+    // GET /dexuat/chitietdexuat
+    async detailsCTDX(req, res, next) {
+        try {
+            const CTDX = await models.ChiTietDeXuat.findOne({
+                where: {
+                    MaDeXuat: req.query.MaDeXuat,
+                    MaChiTietSanPham: req.query.MaChiTietSanPham,
+                },
+                include: [
+                    {
+                        model: models.ChiTietSanPham,
+                        as: 'MaChiTietSanPham_ChiTietSanPham',
+                        required: true,
+                        include: [
+                            {
+                                model: models.Size,
+                                as:"MaSize_Size",                          
+                                required: true,
+                            },
+                            {
+                                model: models.Sanpham,
+                                as: "MaSanPham_SanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.Mau,
+                                as: "MaMau_Mau",
+                                required: true,
+                            },
+                            {
+                                model: models.LoaiSanPham,
+                                as: "MaLoaiSanPham_LoaiSanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.DoiTuong,
+                                as: "MaDoiTuong_DoiTuong",
+                                required: true,
+                            }
+                        ]          
+                    }
+                ]
+            })
+            res.render('./deXuat/detailsCTDX', {
+                CTDX: sequelizeToObject(CTDX),
+            })
+        } catch (error) {
+            next(error)
+        }
+      
+    }
+    // GET /dexuat/view-editCTDX
+    async viewEditCTDX(req, res, next) {
+        try {
+            const CTDX = await models.ChiTietDeXuat.findOne({
+                where: {
+                    MaDeXuat: req.query.MaDeXuat,
+                    MaChiTietSanPham: req.query.MaChiTietSanPham,
+                },
+                include: [
+                    {
+                        model: models.ChiTietSanPham,
+                        as: 'MaChiTietSanPham_ChiTietSanPham',
+                        required: true,
+                        include: [
+                            {
+                                model: models.Size,
+                                as:"MaSize_Size",                          
+                                required: true,
+                            },
+                            {
+                                model: models.Sanpham,
+                                as: "MaSanPham_SanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.Mau,
+                                as: "MaMau_Mau",
+                                required: true,
+                            },
+                            {
+                                model: models.LoaiSanPham,
+                                as: "MaLoaiSanPham_LoaiSanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.DoiTuong,
+                                as: "MaDoiTuong_DoiTuong",
+                                required: true,
+                            }
+                        ]          
+                    }
+                ]
+            })
+            res.render('./deXuat/editCTDX', {
+                CTDX: sequelizeToObject(CTDX),
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    // PATCH /dexuat/editCTDX
+    async editCTDX(req, res, next) {
+        const { MaDeXuat, MaChiTietSanPham, LyDoDeXuat, SoLuongDeXuat } = req.body
+        if (!MaDeXuat || !MaChiTietSanPham) {
+            res.status(400).json({ error: 'Primary keys are required' })
+        }
+        else{
+            try {
+                const CTDXedit = await models.ChiTietDeXuat.update(
+                    {   LyDoDeXuat: LyDoDeXuat,
+                        SoLuongDeXuat: SoLuongDeXuat
+                    },
+                    {
+                        where: {
+                            MaDeXuat: MaDeXuat,
+                            MaChiTietSanPham: MaChiTietSanPham,
+                        },
+                    }
+                )
+                res.redirect(`/dexuat/details/${MaDeXuat}`)
+            } catch (error) {             
+                console.log(error)  
+                next(error)
+            }
+        }
+    }
+    // DELETE /dexuat/deleteCTDX
+    async destroyCTDX(req, res, next) {
+        try {
+            const CTDXdelete = await models.ChiTietDeXuat.destroy({
+                where: {
+                    MaDeXuat: req.body.MaDeXuat,
+                    MaChiTietSanPham: req.body.MaChiTietSanPham,
+                }
+            })
+            res.redirect('back')
+        } catch (error) {
+            next(error)
+        } 
     }
 }
 
