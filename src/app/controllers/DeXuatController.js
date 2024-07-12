@@ -9,7 +9,24 @@ const removeVietnameseTones = require('../../util/remove_vn')
 class DeXuatController {
     // GET /dexuat/index
     async index(req, res, next) {
-        try {
+        try {         
+            const searchConditions = req.query
+            let whereConditions = []          
+            if (Object.keys(searchConditions).length != 0) {
+                if (searchConditions.searchdocs) {
+                    var searchTieude = removeVietnameseTones(searchConditions.searchdocs)
+                    whereConditions.push({Tieude: {
+                        [Op.like] : `%${searchTieude}%`
+                    }})
+                }
+                if (searchConditions.TrangThai) {
+                    whereConditions.push({TrangThai: searchConditions.TrangThai})
+                }
+                if (searchConditions.MaCuaHang) {
+                    whereConditions.push({MaCuaHang: searchConditions.MaCuaHang})
+                }
+            }
+
             const trangThai = [
                 {
                     text: 'Chờ duyệt',
@@ -29,6 +46,9 @@ class DeXuatController {
                 }
             ]   
             const dexuats = await models.DeXuat.findAll({
+                where: {
+                    [Op.and]: whereConditions,
+                },
                 include: [
                     {
                         model: models.CuaHang,
@@ -36,12 +56,14 @@ class DeXuatController {
                         required: true,
                     }
 
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
             res.render('./deXuat/index', {
                 dexuats: mutipleSequelizeToObject(dexuats),
                 cuahangs: mutipleSequelizeToObject(await cuahangs()),
                 trangThai: trangThai,
+                originalTextSearch: req.query.searchdocs,
             })
         } catch (error) {
             console.log(error)
@@ -65,6 +87,20 @@ class DeXuatController {
             res.redirect(`/dexuat/details/${deXuat.MaDeXuat}`)
         } catch (error) {
             console.log('ERROR CREATE DEXUAT!')
+            next(error)
+        }
+    }
+    // DELETE /dexuat/delete/:MaDeXuat
+    async softDelete(req, res, next) {
+        try {
+            await models.DeXuat.destroy({
+                where: {
+                    MaDeXuat: req.params.MaDeXuat
+                }
+            })
+            res.redirect('back')
+        } catch (error) {
+            console.log(error)
             next(error)
         }
     }
@@ -115,6 +151,61 @@ class DeXuatController {
 
             })
             res.render('./deXuat/details', {
+                deXuat: sequelizeToObject(deXuat),
+                cuaHangDX: sequelizeToObject(cuaHangDX),
+                chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    // GET /dexuat/view-details/:MaDeXuat
+    async viewDetails(req, res, next) {
+        try {
+            const maDeXuat = req.params.MaDeXuat
+            const deXuat = await models.DeXuat.findByPk(maDeXuat)
+            const cuaHangDX = await models.CuaHang.findByPk(deXuat.MaCuaHang)
+            const chitietdexuats = await models.ChiTietDeXuat.findAll({
+                where: {
+                    MaDeXuat: maDeXuat,               
+                },
+                include: [
+                    {
+                        model: models.ChiTietSanPham,
+                        as: 'MaChiTietSanPham_ChiTietSanPham',
+                        required: true,
+                        include: [
+                            {
+                                model: models.Size,
+                                as:"MaSize_Size",                          
+                                required: true,
+                            },
+                            {
+                                model: models.Sanpham,
+                                as: "MaSanPham_SanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.Mau,
+                                as: "MaMau_Mau",
+                                required: true,
+                            },
+                            {
+                                model: models.LoaiSanPham,
+                                as: "MaLoaiSanPham_LoaiSanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.DoiTuong,
+                                as: "MaDoiTuong_DoiTuong",
+                                required: true,
+                            }
+                        ]                             
+                    }
+                ]
+
+            })
+            res.render('./deXuat/viewDetails', {
                 deXuat: sequelizeToObject(deXuat),
                 cuaHangDX: sequelizeToObject(cuaHangDX),
                 chitietdexuats: mutipleSequelizeToObject(chitietdexuats),

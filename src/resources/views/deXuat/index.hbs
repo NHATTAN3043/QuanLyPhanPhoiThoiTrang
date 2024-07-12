@@ -1,14 +1,15 @@
 <h3>DANH SÁCH ĐỀ XUẤT</h3>
 
 <p>
-    <a href="/dexuat/view-create" class="btn btn-primary">Tạo đề xuất</a>
+    <a href="/dexuat/view-create" class="btn btn-success">Tạo đề xuất</a>
 </p>
 
 <div style="display: flex; justify-content: center; align-items: center; padding: 16px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <form method="get" action="" class="docs-search-form row gx-3 align-items-center" style="display: flex; flex-wrap: nowrap; align-items: center; margin: 0; width: 100%; max-width: 800px; gap: 10px;">
-
+    <form method="GET" action="/dexuat/index" class="docs-search-form row gx-3 align-items-center" style="display: flex; flex-wrap: nowrap; align-items: center; margin: 0; width: 100%; max-width: 800px; gap: 10px;">
+        <button type="button" id="btn-refresh" class="btn col-auto" style="flex-grow: 1;"><i class="fa-solid fa-arrows-rotate" style="color: rgb(0, 58, 128); height: 23px; width: 23px;"></i></button>
+        
         <div class="col-auto" style="flex-grow: 1;">
-            <input type="text" id="search-docs" name="searchdocs" value="" class="form-control search-docs" placeholder="Tìm kiếm..." style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid #ced4da;">
+            <input type="text" id="search-docs" name="searchdocs" value="{{originalTextSearch}}" class="form-control search-docs" placeholder="Tìm kiếm..." style="width: 100%; padding: 8px 12px; border-radius: 4px; border: 1px solid #ced4da;">
         </div>
         <div class="col-auto" style="flex-grow: 0;">
             <select class="form-select" name="MaCuaHang" style="width: auto;">
@@ -63,10 +64,11 @@
             <td>{{this.MaDeXuat}}</td>
             <td>{{this.Tieude}}</td>
             <td>{{formatDate this.createdAt}}</td>
+            <td>{{this.MaCuaHang_CuaHang.TenCuahang}}</td>
             <td>{{this.TrangThai}}</td>
             <td>
-                <a class="btn btn-outline-info">Xem chi tiết</a>
-                 <a class="btn btn-outline-danger">Xóa</a>
+                <a href="/dexuat/view-details/{{this.MaDeXuat}}" class="btn btn-outline-info">Xem chi tiết</a>
+                <a href="" class="btn btn-outline-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-madexuat="{{this.MaDeXuat}}" >Xóa</a>             
             </td>
         </tr>
         {{else}}
@@ -79,5 +81,56 @@
         {{/each}}
     </tbody>
 </table>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa chi tiết sản phẩm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-dexuat-delete" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete mau --}}
+<form name="form-delete-dexuat" method="POST"></form>
+{{!-- form refesh --}}
+<form name="refresh-form" method="GET" action="/dexuat/index"></form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var MaDeXuat
+        const btn_comfirm_deleteMau = document.getElementById('btn-dexuat-delete')
+        const deleteForm = document.forms['form-delete-dexuat'] 
+        const refresh_form = document.forms['refresh-form']
+        const btn_refresh = document.getElementById('btn-refresh')
+        const inputSearch = document.getElementById('search-docs')
 
+        // Function get id from btn delete
+        $('#delete-mau-modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            MaDeXuat = button.data('madexuat') // Extract info from data-* attributes
+        })
+        // handle btn confirm delete onclick
+        btn_comfirm_deleteMau.onclick = function(){
+            deleteForm.action = '/dexuat/delete/' + MaDeXuat + '?_method=DELETE'
+            deleteForm.submit()
+        }
+        // handle refresh data of search and filter
+        btn_refresh.onclick = function(){
+        inputSearch.value = ''
+        refresh_form.submit()
+        }
+    })
+
+  
+</script>
 
