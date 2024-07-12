@@ -11,13 +11,13 @@ function handleCheckbox(options){
       })
       // handle when checkboxItem change
       checkboxItem.change(function() {
-        var isCheckedAll = checkboxItem.length === $('input[name="maphieunhaps[]"]:checked').length
+        var isCheckedAll = checkboxItem.length === $(options.checkboxItemIsChecked).length
         checkboxAll.prop('checked', isCheckedAll)
         validateCheckboxToSubmit()
       })
       // handle disable btn submit 
       function validateCheckboxToSubmit() {
-        var countChecked = $('input[name="maphieunhaps[]"]:checked').length
+        var countChecked = $(options.checkboxItemIsChecked).length
         if (countChecked > 0) {
           btnSubmitAction.attr('disabled', false)
         }else{

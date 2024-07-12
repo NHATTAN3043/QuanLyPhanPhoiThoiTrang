@@ -9,9 +9,17 @@ const removeVietnameseTones = require('../../util/remove_vn')
 class DeXuatController {
     // GET /dexuat/index
     async index(req, res, next) {
+        const searchConditions = req.query
+        let whereConditions = []  
+        const page = parseInt(req.query.page) || 1
+        const limit = 6
+        const offset = (page - 1) * limit
         try {         
-            const searchConditions = req.query
-            let whereConditions = []          
+            // count chitietsanpham
+            const countAlldx = await models.DeXuat.count({})
+            // chia trang
+            const totalPages = Math.ceil(countAlldx / limit)
+            // filter conditions        
             if (Object.keys(searchConditions).length != 0) {
                 if (searchConditions.searchdocs) {
                     var searchTieude = removeVietnameseTones(searchConditions.searchdocs)
@@ -58,12 +66,16 @@ class DeXuatController {
 
                 ],
                 order: [['createdAt', 'DESC']],
+                limit: limit,
+                offset: offset,
             })
             res.render('./deXuat/index', {
                 dexuats: mutipleSequelizeToObject(dexuats),
                 cuahangs: mutipleSequelizeToObject(await cuahangs()),
                 trangThai: trangThai,
                 originalTextSearch: req.query.searchdocs,
+                currentPage: page,
+                totalPages,
             })
         } catch (error) {
             console.log(error)

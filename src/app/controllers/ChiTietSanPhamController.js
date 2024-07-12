@@ -21,7 +21,7 @@ class ChiTietSanPhamController {
             const countAllctsp = await models.ChiTietSanPham.count({})
             // chia trang
             const totalPages = Math.ceil(countAllctsp / limit)
-            // conditions filter
+            // filter conditions 
             if (Object.keys(searchConditions).length != 0) {
                if (searchConditions.MaSize) {
                     whereConditions.push({MaSize: searchConditions.MaSize})

@@ -489,7 +489,7 @@ class PhieuNhapController {
             })
             res.redirect('back')
         } catch (error) {
-            
+            next(error)
         }
     }
     // POST /phieunhap/handle-indexform-action

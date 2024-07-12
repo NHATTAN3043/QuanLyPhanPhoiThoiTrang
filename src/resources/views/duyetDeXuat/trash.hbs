@@ -1,0 +1,213 @@
+<h2 style="color: red">DANH SÁCH ĐỀ XUẤT ĐÃ XÓA</h2>
+<div style="margin-top: 5px;">
+      <a href="/duyetdexuat/index">Quay lại</a>
+    </div> 
+<div style="display: flex; justify-content: center; align-items: center; padding: 16px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <form method="GET" action="/duyetdexuat/trash" class="docs-search-form row gx-3 align-items-center" style="display: flex; flex-wrap: nowrap; align-items: center; margin: 0; width: 100%; max-width: 800px; gap: 10px;">
+        <button type="button" id="btn-refresh" class="btn col-auto" style="flex-grow: 0;"><i class="fa-solid fa-arrows-rotate" style="color: rgb(0, 58, 128); height: 23px; width: 23px;"></i></button>
+        
+        <div class="col-auto" style="flex-grow: 1;">
+            <input type="text" id="search-docs" name="searchdocs" value="{{originalTextSearch}}" class="form-control search-docs" placeholder="Tìm kiếm..." style="width: 250px; padding: 8px 12px; border-radius: 4px; border: 1px solid #ced4da;">
+        </div>
+        <div class="col-auto" style="flex-grow: 0;">
+            <select class="form-select w-auto" name="MaCuaHang" style="width: auto;">
+                <option value="">Chọn cửa hàng</option>
+                {{#each cuahangs}}
+                <option value="{{this.MaCuaHang}}">{{this.TenCuahang}}</option>
+                {{else}}
+                <option value="">Không có cửa hàng nào</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-auto" style="flex-grow: 0;">
+            <select class="form-select w-auto" name="TrangThai" style="width: auto;">
+                <option value="">Trạng thái</option>
+                {{#each trangThai}}
+                <option value="{{this.value}}">{{this.text}}</option>
+                {{else}}
+                <option value="">Không có trạng thái</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-auto" style="flex-grow: 0;">
+            <button type="submit" class="btn app-btn-secondary" style="padding: 8px 10px; background-color: #007bff; color: white; border: none; border-radius: 4px;">Tìm kiếm</button>
+        </div>
+    </form>
+</div>
+<form method="POST" action="/duyetdexuat/handle-indexform-actions">
+    <div class="mt-2 mb-2 d-flex">
+      <div class="action-left">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
+              <label class="form-check-label" for="defaultCheck1">
+                Chọn tất cả
+              </label>
+          </div>
+          <div class="form-group selectlist">     
+              <select class="form-control form-control-sm" id="exampleFormControlSelect1" name="action" required="required">
+                <option value="">--hành động--</option>
+                <option value="restore">Khôi phục</option> 
+                <option value="delete-force">Xóa vĩnh viễn</option>                
+              </select>
+          </div>
+            <button type="submit" class="btn btn-primary btn-sm" id="btnSubmit" disabled="disabled">Thực hiện</button>
+      </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    #
+                </th>
+                <th>
+                    Mã đề xuất
+                </th>
+                <th>
+                    Tiêu đề 
+                </th>
+                <th>
+                    Thời gian đề xuất
+                </th>
+                <th>
+                    Cửa hàng
+                </th>
+                <th>
+                    Trạng thái
+                </th>
+                <th>Hoạt động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each dexuats}}
+            <tr>
+                <td>
+                    <div class="mt-2 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="madexuats[]" value="{{this.MaDeXuat}}">            
+                        </div>
+                    </div>
+                </td>
+                <td>{{this.MaDeXuat}}</td>
+                <td>{{this.Tieude}}</td>
+                <td>{{formatDate this.createdAt}}</td>
+                <td>{{this.MaCuaHang_CuaHang.TenCuahang}}</td>
+                <td>{{this.TrangThai}}</td>
+                <td>
+                    <div class="action-btn" style="display: flex;">
+                        <a href="" class="btn btn-restore" style="color: rgb(36, 8, 216);" data-madexuat="{{this.MaDeXuat}}">Khôi phục</a>
+                        <a href="" class="btn" style="color: red;" data-toggle="modal" data-target="#delete-mau-modal" data-madexuat="{{this.MaDeXuat}}" >Xóa vĩnh viễn</a>
+                    </div>         
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="6" style="text-align: center;">
+                    Bạn chưa có đề xuất nào.              
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
+{{!-- pagination page --}}
+<nav class="app-pagination mt-2">
+    <ul class="pagination justify-content-center">
+        {{#if (gt currentPage 1)}}
+        <li class="page-item">
+            <a class="page-link" href="/duyetdexuat/trash?page={{decrement currentPage}}">Previous</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#pagination currentPage totalPages}}
+        <li class="page-item {{#if active}}active{{/if}}">
+            <a class="page-link" href="/duyetdexuat/trash?page={{number}}">{{number}}</a>
+        </li>
+        {{/pagination}}
+
+        {{#if (lt currentPage totalPages)}}
+        <li class="page-item">
+            <a class="page-link" href="/duyetdexuat/trash?page={{increment currentPage}}">Next</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa đề xuất</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-dexuat-delete" type="button" class="btn btn-danger">Xóa vĩnh viễn</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete mau --}}
+<form name="form-delete-dexuat" method="POST"></form>
+{{!-- Form restore phieunhap --}}
+<form name="form-restore-dexuat" method="POST"></form> 
+{{!-- form refesh --}}
+<form name="refresh-form" method="GET" action="/duyetdexuat/trash"></form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var MaDeXuat
+        const btn_comfirm_deleteMau = document.getElementById('btn-dexuat-delete')
+        const deleteForm = document.forms['form-delete-dexuat'] 
+        const refresh_form = document.forms['refresh-form']
+        const btn_refresh = document.getElementById('btn-refresh')
+        const inputSearch = document.getElementById('search-docs')
+        const restoreForm = document.forms['form-restore-dexuat']
+        const btn_restore = $('.btn-restore')
+
+        // Function get id from btn delete
+        $('#delete-mau-modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            MaDeXuat = button.data('madexuat') // Extract info from data-* attributes
+        })
+        // handle btn confirm delete onclick
+        btn_comfirm_deleteMau.onclick = function(){
+            deleteForm.action = '/duyetdexuat/destroy/' + MaDeXuat + '?_method=DELETE'
+            deleteForm.submit()
+        }
+        // handle btn-restore click
+        btn_restore.click(function(e){
+            e.preventDefault()
+            // Get id by Jquery 
+            const maDXR = $(this).data('madexuat')
+            restoreForm.action = '/duyetdexuat/restore/' + maDXR +'?_method=PATCH'
+            restoreForm.submit()
+    })
+        // handle refresh data of search and filter
+        btn_refresh.onclick = function(){
+        inputSearch.value = ''
+        refresh_form.submit()
+        }
+        // function handle checkbox and btn submit
+        handleCheckbox({
+            checkboxAll: '#checkboxAll',
+            checkboxItem: 'input[name="madexuats[]"]',
+            checkboxItemIsChecked: 'input[name="madexuats[]"]:checked',
+            btnSubmitAction: '#btnSubmit'
+        })
+    })
+
+  
+</script>
+

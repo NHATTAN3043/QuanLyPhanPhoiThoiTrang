@@ -34,8 +34,9 @@
                 <th>Màu</th>
                 <th>Loại</th>
                 <th>Đối tượng</th>
-                <th>Số lượng đề xuất</th>             
-                <th>Hành động</th>
+                <th>SL đề xuất</th>
+                <th>SL duyệt</th>             
+                <th>Trạng thái</th>
             </tr>
         </thead>
         <tbody>
@@ -48,26 +49,21 @@
             <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
             <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>
             <td>{{this.SoLuongDeXuat}}</td>
+            <td>{{this.SoLuongDuyet}}</td>
             <td>
-                <a href="/dexuat/chitietdexuat?MaDeXuat={{../deXuat.MaDeXuat}}&MaChiTietSanPham={{this.MaChiTietSanPham}}" class="btn btn-info">Xem</a>
-                <a href="/dexuat/view-editCTDX?MaDeXuat={{../deXuat.MaDeXuat}}&MaChiTietSanPham={{this.MaChiTietSanPham}}" class="btn btn-warning">Sửa</a>
-                <form method="POST" action="/dexuat/deleteCTDX?_method=DELETE" style="display: inline;">
-                    <input type="hidden" name="MaDeXuat" value="{{../deXuat.MaDeXuat}}">
-                    <input type="hidden" name="MaChiTietSanPham" value="{{this.MaChiTietSanPham}}">
-                    <button type="submit" class="btn btn-danger">Xóa</button>
-                </form>
+                {{this.TrangThaiDeXuat}}
             </td>
            </tr>
 
            {{else}}
             <tr>
-                <td colspan="9" style="text-align: center;">Bạn chưa chọn sản phẩm. <a href="/dexuat/chonsanpham/{{deXuat.MaDeXuat}}">Click để chọn</a></td>
+                <td colspan="9" style="text-align: center;">Bạn chưa chọn sản phẩm.</td>
             </tr>
            {{/each}}
         </tbody>
     </table>
 
     <div class="text-center mt-4">
-        <a href="/dexuat/index" class="btn btn-secondary">Xác nhận</a>
+        <a href="/dexuat/index" class="btn btn-info">Quay lại</a>
     </div>
 </div>

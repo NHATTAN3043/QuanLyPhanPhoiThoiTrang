@@ -1,4 +1,4 @@
-  <h3>BẢNG NHÀ CUNG CẤP SẢN PHẨM</h3>
+  <h3>BẢNG DANH SÁCH PHIẾU NHẬP </h3>
     <div style="margin-top: 5px;">
       <a href="/phieunhap/trash">Thùng rác</a>
       <a style="color: blue;">({{count}})</a>
@@ -158,7 +158,8 @@
     handleCheckbox({
       checkboxAll: '#checkboxAll',
       checkboxItem: 'input[name="maphieunhaps[]"]',
-      btnSubmitAction: '#btnSubmit'
+      checkboxItemIsChecked: 'input[name="maphieunhaps[]"]:checked',
+      btnSubmitAction: '#btnSubmit',
     })
     // filter nha cung cap
     /**
