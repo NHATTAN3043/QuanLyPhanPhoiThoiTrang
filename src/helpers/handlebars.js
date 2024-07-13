@@ -45,6 +45,10 @@ Handlebars.registerHelper('gt', function(a, b) {
 Handlebars.registerHelper('lt', function(a, b) {
   return a < b
 })
+// equals string
+Handlebars.registerHelper('equalString', function(st1, st2) {
+  return st1 === st2
+})
 // pagination page for view index
 Handlebars.registerHelper('pagination', function(currentPage, totalPages, options) {
   let out = ''

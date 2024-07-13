@@ -18,4 +18,4 @@ router.delete('/deleteCTDX', deXuatController.destroyCTDX)
 router.delete('/delete/:MaDeXuat', deXuatController.softDelete)
 
 
-module.exports = router;
+module.exports = router
