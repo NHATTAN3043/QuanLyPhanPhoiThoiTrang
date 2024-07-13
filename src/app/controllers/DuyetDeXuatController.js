@@ -266,6 +266,185 @@ class DuyetDeXuatController {
                 break;
         }     
     }
+    // GET /duyetdexuat/view-ctdx/:MaDeXuat
+    async viewCTDX(req, res, next) {
+        try {
+            const maDeXuat = req.params.MaDeXuat
+            const deXuat = await models.DeXuat.findByPk(maDeXuat)
+            const cuaHangDX = await models.CuaHang.findByPk(deXuat.MaCuaHang)
+            const chitietdexuats = await models.ChiTietDeXuat.findAll({
+                where: {
+                    MaDeXuat: maDeXuat,               
+                },
+                include: [
+                    {
+                        model: models.ChiTietSanPham,
+                        as: 'MaChiTietSanPham_ChiTietSanPham',
+                        required: true,
+                        include: [
+                            {
+                                model: models.Size,
+                                as:"MaSize_Size",                          
+                                required: true,
+                            },
+                            {
+                                model: models.Sanpham,
+                                as: "MaSanPham_SanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.Mau,
+                                as: "MaMau_Mau",
+                                required: true,
+                            },
+                            {
+                                model: models.LoaiSanPham,
+                                as: "MaLoaiSanPham_LoaiSanPham",
+                                required: true,
+                            },
+                            {
+                                model: models.DoiTuong,
+                                as: "MaDoiTuong_DoiTuong",
+                                required: true,
+                            }
+                        ]                             
+                    }
+                ]
+
+            })
+            res.render('./duyetDeXuat/viewCTDX', {
+                deXuat: sequelizeToObject(deXuat),
+                cuaHangDX: sequelizeToObject(cuaHangDX),
+                chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    // GET /duyetdexuat/view-approvalCTDX
+    async viewApprovalCTDX(req, res, next) {
+        const { MaDeXuat, MaChiTietSanPham, message} = req.query
+        try {
+            const selectList = [
+                {
+                    value: 'Duyệt'
+                },
+                {
+                    value: 'Không duyệt'
+                }
+            ]
+            if (!MaDeXuat || !MaChiTietSanPham) {
+                res.redirect('back')
+            }else{
+                const CTDX = await models.ChiTietDeXuat.findOne({
+                    where: {
+                        MaDeXuat: req.query.MaDeXuat,
+                        MaChiTietSanPham: req.query.MaChiTietSanPham,
+                    },
+                    include: [
+                        {
+                            model: models.ChiTietSanPham,
+                            as: 'MaChiTietSanPham_ChiTietSanPham',
+                            required: true,
+                            include: [
+                                {
+                                    model: models.Size,
+                                    as:"MaSize_Size",                          
+                                    required: true,
+                                },
+                                {
+                                    model: models.Sanpham,
+                                    as: "MaSanPham_SanPham",
+                                    required: true,
+                                },
+                                {
+                                    model: models.Mau,
+                                    as: "MaMau_Mau",
+                                    required: true,
+                                },
+                                {
+                                    model: models.LoaiSanPham,
+                                    as: "MaLoaiSanPham_LoaiSanPham",
+                                    required: true,
+                                },
+                                {
+                                    model: models.DoiTuong,
+                                    as: "MaDoiTuong_DoiTuong",
+                                    required: true,
+                                }
+                            ]          
+                        }
+                    ]
+                })
+                res.render('./duyetDeXuat/duyetCTDX', {
+                    CTDX: sequelizeToObject(CTDX),
+                    selectList,
+                    message,
+                })
+            }
+
+        } catch (error) {
+            next(error)
+        }
+    }
+    // PATCH /duyetdexuat/duyet-ctdx
+    async approvalCTDX(req, res, next) {
+        const { MaDeXuat, MaChiTietSanPham, SoLuongDuyet, TrangThaiDeXuat } = req.body
+        var message = ''
+        if (!MaDeXuat || !MaChiTietSanPham) {
+            res.status(400).json({ error: 'Primary keys are required' })
+        }
+        else{
+            if (SoLuongDuyet <= 0 && TrangThaiDeXuat==='Duyệt'){
+                message ='Số lượng duyệt phải > 0!'
+                res.redirect(`/duyetdexuat/view-approvalCTDX?MaDeXuat=${MaDeXuat}&MaChiTietSanPham=${MaChiTietSanPham}&message=${message}`)
+            }
+            if (SoLuongDuyet > 0 && TrangThaiDeXuat==='Không duyệt') {
+                message ='Số lượng duyệt phải = 0!'
+                res.redirect(`/duyetdexuat/view-approvalCTDX?MaDeXuat=${MaDeXuat}&MaChiTietSanPham=${MaChiTietSanPham}&message=${message}`)
+            }
+            else {
+                try {
+                    const CTDXedit = await models.ChiTietDeXuat.update(
+                        {   SoLuongDuyet: SoLuongDuyet,
+                            TrangThaiDeXuat: TrangThaiDeXuat,
+                        },
+                        {
+                            where: {
+                                MaDeXuat: MaDeXuat,
+                                MaChiTietSanPham: MaChiTietSanPham,
+                            },
+                        }
+                    )
+                    res.redirect(`/duyetdexuat/view-ctdx/${MaDeXuat}`)
+                } catch (error) {             
+                    console.log(error)  
+                    next(error)
+                }
+            }
+        }
+    }
+    // PATCH /duyetdexuat/duyetDX
+    async approvalDX(req, res, next) {
+        const madx = req.body.MaDeXuat
+        try {
+            const duyetCTDX = await models.DeXuat.update(
+                {
+                    TrangThai: 'Đã duyệt'
+                },
+                {
+                    where: {
+                        MaDeXuat: madx,
+                    }
+                }
+            )
+            res.redirect('/duyetdexuat/index')
+        } catch (error) {
+            console.log(error)
+            res.redirect('back')
+        }
+
+    }
 }
 
 module.exports = new DuyetDeXuatController
