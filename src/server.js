@@ -7,11 +7,16 @@ const morgan = require('morgan')
 const methodOverride = require('method-override')
 require('dotenv').config()
 const app = express()
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 app.use(express.static(path.join(__dirname, 'public')))
 //config view egine
 configViewEgine(app)
 
+// JWT
+app.use(cors())
+app.use(cookieParser())
 // Dùng để lấy dâta từ middleware
 // Sử dụng middleware để xử lý dữ liệu JSON
 app.use(express.json());

@@ -1,0 +1,71 @@
+<h1>QUẢN LÝ TÀI KHOẢN</h1>
+
+<p>
+    <a href="/taikhoan/view-create" class="btn btn-success">Tạo tài khoản</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Họ tên
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Sdt
+            </th>
+            <th>
+                Ngày sinh
+            </th>
+            <th>
+                Giới tính
+            </th>
+            <th>
+                Cửa hàng
+            </th>
+           <th>
+                Chức vụ
+           </th>        
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+{{#each taikhoans}}
+        <tr>
+            <td>
+                {{this.HoTen}}
+            </td>
+            <td>
+                {{this.Email}}
+            </td>
+            <td>
+                {{this.SDT}}
+            </td>
+            <td>
+                {{formatDate this.NgaySinh}}
+            </td>
+            <td>
+                {{this.Gioitinh}}
+            </td>          
+            <td>
+                {{this.MaCuaHang_CuaHang.TenCuahang}}
+            </td>
+           <td>
+                {{this.MaQuyen_PhanQuyen.TenQuyen}}
+            </td>
+            
+            <td>
+                <a class="btn btn-warning">Edit</a> 
+                <a class="btn btn-success">Details</a>                
+            </td>
+        </tr>
+        {{else}}
+        <tr>
+            <td colspan="9">
+                Bạn chưa có tài khoản nào.
+            </td>
+        </tr>
+{{/each}}
+    </tbody>
+</table>

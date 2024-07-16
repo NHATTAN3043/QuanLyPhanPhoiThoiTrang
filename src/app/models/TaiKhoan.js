@@ -53,10 +53,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     Email: {
       type: DataTypes.STRING(50),
+      unique: true,
       allowNull: true
     },
     matkhau: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING(200),
       allowNull: true
     }
   }, {

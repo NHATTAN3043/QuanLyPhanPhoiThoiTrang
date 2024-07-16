@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 
 const deXuatController = require('../app//controllers/DeXuatController')
+const middlewareController = require('../app/controllers/MiddlewareController')
 
-router.get('/index', deXuatController.index)
+router.get('/index',middlewareController.verifytokenandAdmin, deXuatController.index)
 router.get('/view-create', deXuatController.viewCreate)
 router.get('/details/:MaDeXuat', deXuatController.details)
 router.get('/view-details/:MaDeXuat', deXuatController.viewDetails)

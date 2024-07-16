@@ -75,4 +75,14 @@ const cuahangs = async function() {
     }
 }
 
-module.exports = { sanphams, maus, doituongs, sizes, loaisanphams, nhacungcaps, cuahangs }
+const phanquyens = async function() {
+    try {
+        const list = await models.PhanQuyen.findAll({})
+        return list
+    } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
+module.exports = { sanphams, maus, doituongs, sizes, loaisanphams, nhacungcaps, cuahangs, phanquyens }

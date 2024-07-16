@@ -11,9 +11,12 @@ const parentDir = path.dirname(currentDir);
 const configViewEgine = (app) => {    
     //temple engine
     app.engine('hbs',
-    engine({
-    extname: '.hbs',
-    handlebars: Handlebars,
+        engine({
+        extname: '.hbs',
+        handlebars: Handlebars,
+        defaultLayout: 'main', // Đặt layout mặc định là 'main'
+        layoutsDir: path.join(parentDir, 'resources', 'views', 'layouts'),
+        partialsDir: path.join(parentDir, 'resources', 'views', 'partials'),
     }));
 
     app.set('view engine', 'hbs');

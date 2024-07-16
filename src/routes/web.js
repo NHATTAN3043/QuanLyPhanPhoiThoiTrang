@@ -10,6 +10,7 @@ const phieunhapRoute = require('./phieu_nhap')
 const dexuatRoute = require('./de_xuat')
 const duyetdexuatRoute = require('./duyet_de_xuat')
 const vanchuyenRoute = require('./van_chuyen')
+const taikhoanRoute = require('./tai_khoan')
 
 function initWebRoute(app) {
     app.use('/size', sizeRoute)
@@ -23,6 +24,7 @@ function initWebRoute(app) {
     app.use('/dexuat', dexuatRoute)
     app.use('/duyetdexuat', duyetdexuatRoute)
     app.use('/vanchuyen', vanchuyenRoute)
+    app.use('/taikhoan', taikhoanRoute)
     app.use('/', homeRoute)
 }
 
