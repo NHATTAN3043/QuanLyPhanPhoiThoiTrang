@@ -10,12 +10,15 @@ class NhaCungCapController {
             .then((nhacungcaps => {
                 res.render('./nhaCungCap/index', {
                     nhacungcaps: mutipleSequelizeToObject(nhacungcaps),
+                    maQuyen: req.user.MaQuyen,
                 })
             }))
     }
     // GET nhacungcap/view-create
     async viewCreate(req, res, next) {
-        res.render('./nhaCungCap/create')
+        res.render('./nhaCungCap/create', {
+            maQuyen: req.user.MaQuyen,
+        })
     }
     // POST nhacungcap/create
     async create(req, res, next) {
@@ -32,7 +35,9 @@ class NhaCungCapController {
             .then((nhacc) => {
                 res.render('./nhaCungCap/edit',
                 {
-                    nhacc: sequelizeToObject(nhacc)
+                    nhacc: sequelizeToObject(nhacc),
+                    maQuyen: req.user.MaQuyen,
+
                 })
             }).catch((error) =>{
                 next(error)

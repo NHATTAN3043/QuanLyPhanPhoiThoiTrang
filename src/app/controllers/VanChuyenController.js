@@ -83,6 +83,7 @@ class VanChuyenController {
                 originalTextSearch: req.query.searchdocs, 
                 currentPage: page,
                 totalPages,         
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             console.log(error)
@@ -143,6 +144,7 @@ class VanChuyenController {
                 cuaHangDX: sequelizeToObject(cuaHangDX),
                 chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
                 totalAmount: i,
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)

@@ -115,7 +115,8 @@ class ChiTietSanPhamController {
                 doituongs:  mutipleSequelizeToObject(await doituongs()),
                 originalTextSearch: searchConditions.searchText, 
                 currentPage: page,
-                totalPages,              
+                totalPages,           
+                maQuyen: req.user.MaQuyen,
             })              
         } catch (error) {
             console.log(error)
@@ -131,7 +132,7 @@ class ChiTietSanPhamController {
             maus: mutipleSequelizeToObject(await maus()),
             loaisanphams: mutipleSequelizeToObject(await loaisanphams()),
             doituongs: mutipleSequelizeToObject(await doituongs()),
-
+            maQuyen: req.user.MaQuyen,
         })
     }
     // POST /ctsp/create
@@ -184,6 +185,7 @@ class ChiTietSanPhamController {
             maus: mutipleSequelizeToObject(await maus()),
             loaisanphams: mutipleSequelizeToObject(await loaisanphams()),
             doituongs: mutipleSequelizeToObject(await doituongs()),
+            maQuyen: req.user.MaQuyen,
         })
     }
     // PUT /ctsp/edit/:MaChiTietSanPham
@@ -250,7 +252,8 @@ class ChiTietSanPhamController {
             }
         })
         res.render('./chiTietSanPham/detail', {
-            chiTietSanPham: sequelizeToObject(chiTietSanPham),           
+            chiTietSanPham: sequelizeToObject(chiTietSanPham),
+            maQuyen: req.user.MaQuyen,
         })
     }
 }   

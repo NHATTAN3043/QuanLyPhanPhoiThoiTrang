@@ -76,6 +76,7 @@ class DeXuatController {
                 originalTextSearch: req.query.searchdocs,
                 currentPage: page,
                 totalPages,
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             console.log(error)
@@ -86,7 +87,8 @@ class DeXuatController {
     async viewCreate(req, res, next) {
         try {
             res.render('./deXuat/create', {
-                cuahangs: mutipleSequelizeToObject(await cuahangs())
+                cuahangs: mutipleSequelizeToObject(await cuahangs()),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)
@@ -166,6 +168,7 @@ class DeXuatController {
                 deXuat: sequelizeToObject(deXuat),
                 cuaHangDX: sequelizeToObject(cuaHangDX),
                 chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)
@@ -221,6 +224,7 @@ class DeXuatController {
                 deXuat: sequelizeToObject(deXuat),
                 cuaHangDX: sequelizeToObject(cuaHangDX),
                 chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)
@@ -337,6 +341,7 @@ class DeXuatController {
                 currentPage: page,
                 totalPages,
                 message: message,   
+                maQuyen: req.user.MaQuyen,
             })
         }).catch((error) => {
             next(error)
@@ -381,6 +386,7 @@ class DeXuatController {
                 MaDeXuat: MaDeXuat,
                 MaChiTietSanPham: MaChiTietSanPham,
                 CTSP: sequelizeToObject(CTSP),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)
@@ -452,6 +458,7 @@ class DeXuatController {
             })
             res.render('./deXuat/detailsCTDX', {
                 CTDX: sequelizeToObject(CTDX),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)
@@ -503,6 +510,7 @@ class DeXuatController {
             })
             res.render('./deXuat/editCTDX', {
                 CTDX: sequelizeToObject(CTDX),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)

@@ -8,7 +8,8 @@ class SizeController {
         models.Size.findAll({})
             .then(sizes => {
                 res.render('./size/index', {
-                    sizes: mutipleSequelizeToObject(sizes)
+                    sizes: mutipleSequelizeToObject(sizes),
+                    maQuyen: req.user.MaQuyen,
                 }) 
             }).catch(error => {
                 next(error)
@@ -19,7 +20,8 @@ class SizeController {
     async viewEdit(req, res, next) {
         const size = await models.Size.findByPk(req.params.MaSize)
         res.render('./size/edit', {
-            size: sequelizeToObject(size)
+            size: sequelizeToObject(size),
+            maQuyen: req.user.MaQuyen,
         })
     }
     // PUT /size/edit/:MaSize
@@ -38,7 +40,9 @@ class SizeController {
     }
     // GET /size/view-create
     viewCreate(req, res, next) {
-        res.render('./size/create')
+        res.render('./size/create', {
+            maQuyen: req.user.MaQuyen,
+        })
     }
     // POST /size/create
     async create(req, res, next) {

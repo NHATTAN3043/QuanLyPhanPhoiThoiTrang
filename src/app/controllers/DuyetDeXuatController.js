@@ -87,6 +87,7 @@ class DuyetDeXuatController {
                 originalTextSearch: req.query.searchdocs, 
                 currentPage: page,
                 totalPages,         
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             console.log(error)
@@ -170,7 +171,8 @@ class DuyetDeXuatController {
                 trangThai: trangThai,  
                 originalTextSearch: req.query.searchdocs, 
                 currentPage: page,
-                totalPages,         
+                totalPages,
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             console.log(error)
@@ -316,6 +318,7 @@ class DuyetDeXuatController {
                 deXuat: sequelizeToObject(deXuat),
                 cuaHangDX: sequelizeToObject(cuaHangDX),
                 chitietdexuats: mutipleSequelizeToObject(chitietdexuats),
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             next(error)
@@ -380,6 +383,7 @@ class DuyetDeXuatController {
                     CTDX: sequelizeToObject(CTDX),
                     selectList,
                     message,
+                    maQuyen: req.user.MaQuyen,
                 })
             }
 

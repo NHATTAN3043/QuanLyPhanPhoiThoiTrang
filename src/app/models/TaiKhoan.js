@@ -59,6 +59,10 @@ module.exports = function(sequelize, DataTypes) {
     matkhau: {
       type: DataTypes.STRING(200),
       allowNull: true
+    },
+    RefreshToken: {
+      type: DataTypes.STRING(300),
+      allowNull: true,
     }
   }, {
     sequelize,

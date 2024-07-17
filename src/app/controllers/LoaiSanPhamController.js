@@ -9,7 +9,8 @@ class LoaiSanPhamController {
         models.LoaiSanPham.findAll({})
             .then(lsps => {
                 res.render('./loaiSanPham/index', {
-                    lsps: mutipleSequelizeToObject(lsps)
+                    lsps: mutipleSequelizeToObject(lsps),
+                    maQuyen: req.user.MaQuyen,
                 }) 
             }).catch(error => {
                 next(error)
@@ -19,7 +20,8 @@ class LoaiSanPhamController {
     async viewEdit(req, res, next) {
         const lsp = await models.LoaiSanPham.findByPk(req.params.MaLoaiSanPham)
         res.render('./loaiSanPham/edit', {
-            lsp: sequelizeToObject(lsp)
+            lsp: sequelizeToObject(lsp),
+            maQuyen: req.user.MaQuyen,
         })
     }
     // PUT /lsp/edit/:MaLoaiSanPham
@@ -38,7 +40,9 @@ class LoaiSanPhamController {
     }
      // GET /lsp/view-create
      viewCreate(req, res, next) {
-        res.render('./loaiSanPham/create')
+        res.render('./loaiSanPham/create', {
+            maQuyen: req.user.MaQuyen,
+        })
     }
     // POST /lsp/create
     async create(req, res, next) {

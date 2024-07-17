@@ -55,6 +55,7 @@ class PhieuNhapController {
                 count: countDeleted,
                 currentPage: page,
                 totalPages,
+                maQuyen: req.user.MaQuyen,
             })     
         } catch (error) {
             console.log(error)
@@ -115,6 +116,7 @@ class PhieuNhapController {
                 nhaCungCaps: mutipleSequelizeToObject(await nhacungcaps()),
                 currentPage: page,
                 totalPages,
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             console.log(error)
@@ -124,7 +126,8 @@ class PhieuNhapController {
     // GET /phieunhap/view-create
     async viewCreate(req, res, next) {      
         res.render('./phieuNhap/create', {
-            nhacungcaps: mutipleSequelizeToObject(await nhacungcaps())
+            nhacungcaps: mutipleSequelizeToObject(await nhacungcaps()),
+            maQuyen: req.user.MaQuyen,
         })
     }
     // POST /phieunhap/create
@@ -193,6 +196,7 @@ class PhieuNhapController {
             chiTietPhieuNhaps: mutipleSequelizeToObject(chiTietPhieuNhaps),
             nhaCungCap: sequelizeToObject(nhaCungCap), 
             chiTietPhieuNhaps: mutipleSequelizeToObject(chiTietPhieuNhaps),
+            maQuyen: req.user.MaQuyen,
         })
         } catch (error) {
             console.log(error)
@@ -251,6 +255,7 @@ class PhieuNhapController {
                 nhaCungCap: sequelizeToObject(nhaCungCap), 
                 chiTietPhieuNhaps: mutipleSequelizeToObject(chiTietPhieuNhaps),
                 tongTien: total,
+                maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
             console.log(error)
@@ -366,6 +371,7 @@ class PhieuNhapController {
                 MaPN: MaPN,
                 currentPage: page,
                 totalPages,   
+                maQuyen: req.user.MaQuyen,
             })
         }).catch((error) => {
             next(error)

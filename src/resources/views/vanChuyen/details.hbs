@@ -71,7 +71,7 @@
             <button type="submit" class="btn btn-primary">Xác nhận vận chuyển</button>
         </form>
         {{/if}}
-        {{#if (equalString deXuat.TrangThai 'Đã vận chuyển')}}
+        {{#if (equalString deXuat.TrangThai 'Xác nhận vận chuyển')}}
         <form method="POST" action="/vanchuyen/xacnhanvanchuyen/dvc?_method=PATCH">
             <input type="hidden" name="MaDeXuat" value="{{deXuat.MaDeXuat}}" />
             <button type="submit" class="btn btn-primary">Đã vận chuyển</button>

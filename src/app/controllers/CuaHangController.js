@@ -3,71 +3,68 @@ var initModels = require('../models/init-models')
 const { mutipleSequelizeToObject, sequelizeToObject } = require('../../util/sequelize');
 var models = initModels(sequelize);
 
-class MauController {
-    //GET /mau/index
+class CuaHangController {
+    //GET /cuahang/index
     index(req, res, next) {
-        models.Mau.findAll({})
-            .then(maus => {
-                res.render('./mau/index', {
-                    maus: mutipleSequelizeToObject(maus),
+        models.CuaHang.findAll({})
+            .then(cuahangs => {
+                res.render('./cuaHang/index', {
+                    cuahangs: mutipleSequelizeToObject(cuahangs),
                     maQuyen: req.user.MaQuyen,
                 }) 
             }).catch(error => {
                 next(error)
             })
     }
-    // GET /mau/view-edit/:MauMau
+    // GET /cuahang/view-edit/:MauCuaHang
     async viewEdit(req, res, next) {
-        const mau = await models.Mau.findByPk(req.params.MaMau)
-        res.render('./mau/edit', {
-            mau: sequelizeToObject(mau),
+        const cuahang = await models.CuaHang.findByPk(req.params.MaCuaHang)
+        res.render('./cuaHang/edit', {
+            cuahang: sequelizeToObject(cuahang),
             maQuyen: req.user.MaQuyen,
         })
     }
-    // PUT /mau/edit/:MaMau
+    // PUT /cuahang/edit
     async edit(req, res, next) {
         try {
-            await models.Mau.update(req.body, {
+            await models.CuaHang.update(req.body, {
                 where: {
-                    MaMau: req.body.MaMau
+                    MaCuaHang: req.body.MaCuaHang
                 }
             })            
-            res.redirect('/mau/index')
+            res.redirect('/cuahang/index')
         } catch (error) {
             next(error)
-            console.log('MESSEGE: UPDATE MAU ERROR!')
         }
     }
-     // GET /mau/view-create
+     // GET /cuahang/view-create
      viewCreate(req, res, next) {
-        res.render('./mau/create', {
+        res.render('./cuaHang/create', {
             maQuyen: req.user.MaQuyen,
         })
     }
-    // POST /mau/create
+    // POST /cuahang/create
     async create(req, res, next) {
         try {
-            await models.Mau.create(req.body)
-            res.redirect('/mau/index')
+            await models.CuaHang.create(req.body)
+            res.redirect('/cuahang/index')
         } catch (error) {
             next(error)
-            console.log('MESSEGE: CREATE MAU ERROR!')
         }
     }
-    // DELETE /mau/delete/:MaMau
+    // DELETE /cuahang/delete/:MaCuaHang
     async delete(req, res, next) {   
-        await models.Mau.destroy({
+        await models.CuaHang.destroy({
             where: {
-                MaMau: req.params.MaMau
+                MaCuaHang: req.params.MaCuaHang
             },
             force: true
         }).then(() => {
-            res.redirect('/mau/index')
+            res.redirect('/cuahang/index')
         }).catch((error) => {
             next(error)
-            console.log('MESSEGE: DELETE MAU ERROR!')
         })
    
     }
 }
-module.exports = new MauController
+module.exports = new CuaHangController

@@ -9,7 +9,8 @@ class SanPhamController {
         models.Sanpham.findAll({})
             .then(sanphams => {
                 res.render('./sanPham/index', {
-                    sanphams: mutipleSequelizeToObject(sanphams)
+                    sanphams: mutipleSequelizeToObject(sanphams),
+                    maQuyen: req.user.MaQuyen,
                 }) 
             }).catch(error => {
                 next(error)
@@ -19,7 +20,8 @@ class SanPhamController {
     async viewEdit(req, res, next) {
         const sanpham = await models.Sanpham.findByPk(req.params.MaSanPham)
         res.render('./sanPham/edit', {
-            sanpham: sequelizeToObject(sanpham)
+            sanpham: sequelizeToObject(sanpham),
+            maQuyen: req.user.MaQuyen,
         })
     }
     // PUT /sanpham/edit/:MaSanPham
@@ -38,7 +40,9 @@ class SanPhamController {
     }
      // GET /sanpham/view-create
      viewCreate(req, res, next) {
-        res.render('./sanPham/create')
+        res.render('./sanPham/create', {
+            maQuyen: req.user.MaQuyen,
+        })
     }
     // POST /sanpham/create
     async create(req, res, next) {

@@ -9,7 +9,8 @@ class DoiTuongController {
         models.DoiTuong.findAll({})
             .then(doituongs => {
                 res.render('./doiTuong/index', {
-                    doituongs: mutipleSequelizeToObject(doituongs)
+                    doituongs: mutipleSequelizeToObject(doituongs),
+                    maQuyen: req.user.MaQuyen,
                 }) 
             }).catch(error => {
                 next(error)
@@ -19,7 +20,8 @@ class DoiTuongController {
     async viewEdit(req, res, next) {
         const doituong = await models.DoiTuong.findByPk(req.params.MaDoiTuong)
         res.render('./doiTuong/edit', {
-            doituong: sequelizeToObject(doituong)
+            doituong: sequelizeToObject(doituong),
+            maQuyen: req.user.MaQuyen,
         })
     }
     // PUT /doituong/edit/:MaDoiTuong
@@ -38,7 +40,9 @@ class DoiTuongController {
     }
      // GET /doituong/view-create
      viewCreate(req, res, next) {
-        res.render('./doiTuong/create')
+        res.render('./doiTuong/create', {
+            maQuyen: req.user.MaQuyen,
+        })
     }
     // POST /doituong/create
     async create(req, res, next) {

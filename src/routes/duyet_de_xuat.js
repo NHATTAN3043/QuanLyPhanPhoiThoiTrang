@@ -2,17 +2,18 @@ const express = require('express')
 const router = express.Router()
 
 const duyetDeXuatController = require('../app/controllers/DuyetDeXuatController')
+const MiddlewareController = require('../app/controllers/MiddlewareController')
 
-router.get('/index', duyetDeXuatController.index)
-router.get('/trash', duyetDeXuatController.trash)
-router.get('/view-ctdx/:MaDeXuat', duyetDeXuatController.viewCTDX )
-router.get('/view-approvalCTDX', duyetDeXuatController.viewApprovalCTDX)
-router.patch('/restore/:MaDeXuat', duyetDeXuatController.restoreDeXuat)
-router.patch('/duyet-ctdx', duyetDeXuatController.approvalCTDX)
-router.patch('/duyetDX', duyetDeXuatController.approvalDX)
-router.delete('/destroy/:MaDeXuat', duyetDeXuatController.destroyDeXuat)
-router.delete('/delete/:MaDeXuat', duyetDeXuatController.softDelete)
-router.post('/handle-indexform-actions', duyetDeXuatController.handleIndexFormActions)
+router.get('/index', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.index)
+router.get('/trash', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.trash)
+router.get('/view-ctdx/:MaDeXuat', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.viewCTDX )
+router.get('/view-approvalCTDX', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.viewApprovalCTDX)
+router.patch('/restore/:MaDeXuat', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.restoreDeXuat)
+router.patch('/duyet-ctdx', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.approvalCTDX)
+router.patch('/duyetDX', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.approvalDX)
+router.delete('/destroy/:MaDeXuat', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.destroyDeXuat)
+router.delete('/delete/:MaDeXuat', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.softDelete)
+router.post('/handle-indexform-actions', MiddlewareController.verifytokenandAdmin, duyetDeXuatController.handleIndexFormActions)
 
 
 module.exports = router;
