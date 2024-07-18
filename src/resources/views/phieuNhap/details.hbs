@@ -1,0 +1,232 @@
+
+<div class="container mt-5">
+    <h2 class="text-center">CHI TIẾT PHIẾU NHẬP</h2>
+
+    <div class="mt-4 mb-4">
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2 font-weight-bold">
+                Mã phiếu nhập:
+            </dt>
+            <dd class="col-sm-10">
+                {{phieuNhap.MaPhieuNhap}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Nhà cung cấp:
+            </dt>
+            <dd class="col-sm-10">
+                {{nhaCungCap.TenNCC}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Địa chỉ NCC:
+            </dt>
+            <dd class="col-sm-10">
+                {{nhaCungCap.DiaChi}}
+            </dd>
+             <dt class="col-sm-2 font-weight-bold">
+                Thời gian nhập:
+            </dt>
+            <dd class="col-sm-10">
+                {{formatDate phieuNhap.NgayNhapHang}}
+            </dd>
+        </dl>
+    </div>
+
+    <div class="mb-4">
+        <a href="/phieunhap/chonsanpham/{{phieuNhap.MaPhieuNhap}}" class="btn btn-primary">Thêm chi tiết phiếu nhập</a>
+    </div>
+
+    <h4 class="mb-3">DANH SÁCH CHI TIẾT PHIẾU NHẬP</h4>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Mã sp</th>
+                <th>Tên sản phẩm</th>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>Loại</th>
+                <th>Đối tượng dùng</th>
+                <th>Số lượng nhập</th>
+                <th>Giá nhập/(cái)</th>
+                <th>Action</th>               
+            </tr>
+        </thead>
+        <tbody>
+            {{#each chiTietPhieuNhaps}}
+                <tr data-maphieunhap="{{this.MaPhieuNhap}}" data-mactsp="{{this.MaChiTietSanPham_ChiTietSanPham.MaChiTietSanPham}}">
+                    <td>
+                        {{this.MaChiTietSanPham_ChiTietSanPham.MaChiTietSanPham}}
+                    </td>
+                    <td>
+                        {{this.MaChiTietSanPham_ChiTietSanPham.MaSanPham_SanPham.TenSanPham}}
+                    </td>
+                    <td>
+                        {{this.MaChiTietSanPham_ChiTietSanPham.MaSize_Size.TenSize}}
+                    </td>
+                    <td>
+                        {{this.MaChiTietSanPham_ChiTietSanPham.MaMau_Mau.TenMau}}
+                    </td>      
+                     <td>
+                        {{this.MaChiTietSanPham_ChiTietSanPham.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}
+                    </td> 
+                    <td>
+                        {{this.MaChiTietSanPham_ChiTietSanPham.MaDoiTuong_DoiTuong.TenDoiTuong}}
+                    </td>
+                    <td>
+                        <input type="text" value="{{this.SoLuongNhap}}" id="ip-sl" data-original-value="{{this.SoLuongNhap}}" readonly style="width: 100px;">
+                    </td> 
+                    <td>
+                        <input type="text" value="{{this.GiaNhap}}" id="ip-gia" data-original-value="{{this.GiaNhap}}" readonly style="width: 120px;">
+                    </td>            
+                    <td>                       
+                        <button class="btn btn-sm edit-btn" onclick="enableEdit(this.parentElement.parentElement)">
+                            <i class="fa-solid fa-pen-to-square" style="color: green;"></i>
+                        </button>
+                        <button class="btn cancel-btn" style="display: none;" onclick="saveEdit(this.parentElement.parentElement)">
+                            <i class="fa-solid fa-check" style="color: green;"></i>
+                        </button>
+                        <button class="btn save-btn" style="display: none;" onclick="cancelEdit(this.parentElement.parentElement)">
+                        <i class="fa-regular fa-rectangle-xmark" style="color: red;"></i>                      
+                        </button>
+                        <form method="POST" action="/phieunhap/deletectpn?_method=DELETE" style="display: inline;">
+                            <input type="hidden" name="MaPhieuNhap" value="{{this.MaPhieuNhap}}">
+                            <input type="hidden" name="MaChiTietSanPham" value="{{this.MaChiTietSanPham_ChiTietSanPham.MaChiTietSanPham}}">
+                            <button type="submit" class="btn btn-sm delete-btn" style="border: 0px;"><i class="fa-solid fa-trash" id="icondelete" style="color: red;"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="9" class="text-center">
+                        Bạn chưa thêm sản phẩm nào.
+                        <a href="/phieunhap/chonsanpham/{{phieuNhap.MaPhieuNhap}}">Click vào đây để thêm</a>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <a href="/phieunhap/index" class="btn btn-success">Xác nhận</a>
+    </div>
+</div>
+<script>
+    // Function handle btn Edit
+     function enableEdit(row) {
+            // Lấy các phần tử trong hàng
+            const inputSL = row.querySelector('#ip-sl');
+            const inputGia = row.querySelector('#ip-gia');
+            const editButton = row.querySelector('.edit-btn');
+            const saveButton = row.querySelector('.save-btn');
+            const cancelButton = row.querySelector('.cancel-btn');
+            const deleteButton = row.querySelector('.delete-btn');
+            const iconDelete = row.querySelector('#icondelete');
+            console.log(iconDelete)
+
+            // Kích hoạt trường nhập liệu
+            inputSL.removeAttribute('readonly');
+            inputGia.removeAttribute('readonly');
+            // Ẩn nút Sửa
+            editButton.addEventListener("click", function(event){
+                event.preventDefault()
+            });
+            editButton.style.display = 'none';
+
+            // Hiển thị nút Lưu và Quay lại
+            saveButton.style.display = 'inline-block';
+            cancelButton.style.display = 'inline-block';
+
+            // Vô hiệu hóa nút Xóa trong khi chỉnh sửa
+            deleteButton.setAttribute('disabled', 'true');
+            iconDelete.setAttribute('opacity', '0.3');
+
+        }
+    // function handle btn cancel
+    function cancelEdit(row) {
+            // Lấy các phần tử trong hàng
+            const inputSL = row.querySelector('#ip-sl');
+            const inputGia = row.querySelector('#ip-gia');
+            const editButton = row.querySelector('.edit-btn');
+            const saveButton = row.querySelector('.save-btn');
+            const cancelButton = row.querySelector('.cancel-btn');
+            const deleteButton = row.querySelector('.delete-btn');
+            const iconDelete = row.querySelector('#icondelete');
+
+            // Khôi phục giá trị ban đầu và vô hiệu hóa trường nhập liệu
+            inputSL.value = inputSL.dataset.originalValue? inputSL.dataset.originalValue: '' ;
+            inputGia.value = inputGia.dataset.originalValue? inputGia.dataset.originalValue: '';
+            inputSL.setAttribute('readonly', 'true');
+            inputGia.setAttribute('readonly', 'true');
+
+            // Hiển thị lại nút Sửa
+            editButton.style.display = 'inline-block';
+
+            // Ẩn nút Lưu và Quay lại
+            saveButton.style.display = 'none';
+            cancelButton.style.display = 'none';
+
+            // Kích hoạt lại nút Xóa
+            deleteButton.removeAttribute('disabled');
+            iconDelete.setAttribute('opacity', '1');
+        }
+        // function update date for btn save
+        function saveEdit(row) {
+            // Lấy các phần tử trong hàng
+            const inputSL = row.querySelector('#ip-sl');
+            const inputGia = row.querySelector('#ip-gia');
+            const editButton = row.querySelector('.edit-btn');
+            const saveButton = row.querySelector('.save-btn');
+            const cancelButton = row.querySelector('.cancel-btn');
+            const deleteButton = row.querySelector('.delete-btn');
+            const iconDelete = row.querySelector('#icondelete');
+
+            // Lấy giá trị mới từ trường nhập liệu
+            const soLuong = inputSL.value;
+            const gia = inputGia.value;
+            const MaPhieuNhap = row.dataset.maphieunhap;
+            const MaCTSP = row.dataset.mactsp;
+            console.log(soLuong, gia, MaPhieuNhap, MaCTSP)
+
+            // Gửi yêu cầu cập nhật về server
+            fetch('http://localhost:8080/phieunhap/updateCTPN', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    MaPhieuNhap,
+                    MaChiTietSanPham: MaCTSP,
+                    GiaNhap: gia,
+                    SoLuongNhap: soLuong,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Vô hiệu hóa trường nhập liệu
+                    inputSL.setAttribute('readonly', 'true');
+                    inputGia.setAttribute('readonly', 'true');
+
+                    // Hiển thị lại nút Sửa
+                    editButton.style.display = 'inline-block';
+
+                    // Ẩn nút Lưu và Quay lại
+                    saveButton.style.display = 'none';
+                    cancelButton.style.display = 'none';
+
+                    // Kích hoạt lại nút Xóa
+                    deleteButton.removeAttribute('disabled');
+                } else {
+                    alert('Cập nhật thất bại else!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Cập nhật thất bại!');
+            });
+            // Trả lại opacity cho icondelete 
+            iconDelete.setAttribute('opacity', '1');
+
+        }
+      
+</script>

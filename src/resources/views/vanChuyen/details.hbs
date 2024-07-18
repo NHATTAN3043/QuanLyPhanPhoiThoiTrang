@@ -1,0 +1,82 @@
+<div class="container mt-5">
+    <h2 class="text-center">ĐƠN VẬN CHUYỂN HÀNG HÓA</h2>
+
+    <div class="mt-4 mb-4">
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2 font-weight-bold">
+                Tiêu đề:
+            </dt>
+            <dd class="col-sm-10">
+                {{deXuat.Tieude}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Thời gian lên đơn:
+            </dt>
+            <dd class="col-sm-10">
+                {{formatDate deXuat.updatedAt}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Cửa hàng:
+            </dt>
+            <dd class="col-sm-10">
+                {{cuaHangDX.TenCuahang}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Địa chỉ nhận:
+            </dt>
+            <dd class="col-sm-10">
+                {{cuaHangDX.DiaChi}}
+            </dd>
+        </dl>
+    </div>
+    <h4 class="mb-3">DANH SÁCH CHI TIẾT ĐỀ XUẤT</h4>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr class="table-primary">
+                <th>Mã sp</th>
+                <th>Tên</th>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>Loại</th>
+                <th>Đối tượng</th>             
+                <th>Số lượng</th>             
+            </tr>
+        </thead>
+        <tbody>
+           {{#each chitietdexuats}}
+           <tr>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaChiTietSanPham}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaSanPham_SanPham.TenSanPham}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaSize_Size.TenSize}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaMau_Mau.TenMau}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>
+            <td>{{this.SoLuongDuyet}}</td>                    
+           </tr>
+           {{else}}
+            <tr>
+                <td colspan="10" style="text-align: center;">Bạn chưa chọn sản phẩm.</td>
+            </tr>
+           {{/each}}
+        </tbody>
+    </table>
+    <div class="">
+        <h5>Tổng số lượng: {{totalAmount}} (cái)</h5>
+    </div>
+    <div class="text-center mt-4">
+        {{#if (equalString deXuat.TrangThai 'Đã duyệt')}}
+        <form method="POST" action="/vanchuyen/xacnhanvanchuyen/xnvc?_method=PATCH">
+            <input type="hidden" name="MaDeXuat" value="{{deXuat.MaDeXuat}}" />
+            <button type="submit" class="btn btn-primary">Xác nhận vận chuyển</button>
+        </form>
+        {{/if}}
+        {{#if (equalString deXuat.TrangThai 'Xác nhận vận chuyển')}}
+        <form method="POST" action="/vanchuyen/xacnhanvanchuyen/dvc?_method=PATCH">
+            <input type="hidden" name="MaDeXuat" value="{{deXuat.MaDeXuat}}" />
+            <button type="submit" class="btn btn-primary">Đã vận chuyển</button>
+        </form>
+        {{/if}}
+        <a href="/vanchuyen/index">Quay lại</a>
+    </div>
+</div>

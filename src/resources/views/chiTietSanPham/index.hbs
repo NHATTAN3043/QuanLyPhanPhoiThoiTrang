@@ -1,0 +1,171 @@
+<h1>Bảng chi tiết sản phẩm</h1>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <p>
+        <a href="/ctsp/view-create" class="btn btn-outline-success">Tạo mới</a>
+    </p>
+</div>
+
+ <!-- form tim kiem va loc -->
+    <form method="GET" action="/ctsp/index" class="action-right">
+      <div class="form-group" style="width: fit-content;">
+          <button type="button" id="btn-refresh" class="btn"><i class="fa-solid fa-arrows-rotate" style="color: rgb(0, 58, 128); height: 25px; width: 25px;"></i></button>
+          <input type="text" name="searchText" id="input_search" value="{{originalTextSearch}}" placeholder=" Nhập tại đây..." style="height: 35px; width: 300px; " />                                  
+          <select class ="custom-select" name="MaSize" style="width: fit-content">   
+              <option value="">-- Chọn size --</option>
+              {{#each sizes}}
+              <option value="{{this.MaSize}}">{{this.TenSize}}</option>
+              {{else}}
+              <option value="">Không có size</option>
+              {{/each}}
+          </select>
+          <select class ="custom-select" name="MaMau" style="width: fit-content">   
+              <option value="">-- Chọn màu --</option>
+              {{#each maus}}
+              <option value="{{this.MaMau}}">{{this.TenMau}}</option>
+              {{else}}
+              <option value="">Không có màu</option>
+              {{/each}}
+          </select>
+          <select class ="custom-select" name="MaLoai" style="width: fit-content">   
+              <option value="">-- Chọn loai --</option>
+              {{#each loais}}
+              <option value="{{this.MaLoaiSanPham}}">{{this.TenLoaiSanPham}}</option>
+              {{else}}
+              <option value="">Không có loại</option>
+              {{/each}}
+          </select>
+          <select class ="custom-select" name="MaDoiTuong" style="width: fit-content">   
+              <option value="">-- Chọn đối tượng --</option>
+              {{#each doituongs}}
+              <option value="{{this.DoiTuong}}">{{this.TenDoiTuong}}</option>
+              {{else}}
+              <option value="">Không có đối tượng</option>
+              {{/each}}
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i></button>
+      </div>
+    </form>
+  <!-- end -->  
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Mã ctsp</th>
+      <th scope="col">Tên sản phẩm</th>
+      <th scope="col">Size</th>
+      <th scope="col">Màu</th>
+      <th scope="col">Loại</th>
+      <th scope="col">Đối tượng</th>
+      <th scope="col">Số lượng</th>
+      <th>Nơi sản xuất</th>
+      <th>Hoạt động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each ctsps}}
+    <tr>
+        <th scope="row">{{this.MaChiTietSanPham}}</th>
+        <td>{{this.MaSanPham_SanPham.TenSanPham}}</td>
+        <td>{{this.MaSize_Size.TenSize}}</td>
+        <td>{{this.MaMau_Mau.TenMau}}</td>
+        <td>{{this.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
+        <td>{{this.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>
+        <td>{{this.SoLuong}}</td>
+        <td>{{this.NSX}}</td>
+        <td>
+            <div class="action-btn" style="display: flex;">
+                <a href="/ctsp/detail/{{this.MaChiTietSanPham}}" class="btn btn-success" style="margin:2px 5px;">Chi tiết</a>
+                <a href="/ctsp/view-edit/{{this.MaChiTietSanPham}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
+                <a href="" class="btn btn-danger" style="margin:2px 5px;" data-toggle="modal" data-target="#delete-mau-modal" data-mamau="{{this.MaChiTietSanPham}}" >Xóa</a>
+            </div> 
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td colspan="9" style="text-align: center;">
+            Bạn chưa có chi tiết sản phẩm nào.
+            <a href="/ctsp/view-create">Click vào đây để thêm</a>
+        </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{!-- pagination page --}}
+<nav class="app-pagination mt-2">
+    <ul class="pagination justify-content-center">
+        {{#if (gt currentPage 1)}}
+        <li class="page-item">
+            <a class="page-link" href="/ctsp/index?page={{decrement currentPage}}">Previous</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#pagination currentPage totalPages}}
+        <li class="page-item {{#if active}}active{{/if}}">
+            <a class="page-link" href="/ctsp/index?page={{number}}">{{number}}</a>
+        </li>
+        {{/pagination}}
+
+        {{#if (lt currentPage totalPages)}}
+        <li class="page-item">
+            <a class="page-link" href="/ctsp/index?page={{increment currentPage}}">Next</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa chi tiết sản phẩm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-mau-delete" type="button" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete mau --}}
+<form name="form-delete-mau" method="POST"></form>
+{{!-- form refesh --}}
+<form name="refresh-form" method="GET" action="/ctsp/index"></form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var MaCTSP
+    const btn_comfirm_deleteMau = document.getElementById('btn-mau-delete')
+    const deleteForm = document.forms['form-delete-mau'] 
+    const refresh_form = document.forms['refresh-form']
+    const btn_refresh = document.getElementById('btn-refresh')
+    const inputSearch = document.getElementById('input_search')
+    // Function get id from btn delete
+    $('#delete-mau-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    MaCTSP = button.data('mamau') // Extract info from data-* attributes
+    })
+    // handle btn confirm delete onclick
+    btn_comfirm_deleteMau.onclick = function(){
+      deleteForm.action = '/ctsp/delete/' + MaCTSP + '?_method=DELETE'
+      deleteForm.submit()
+    }
+    // handle refresh data of search and filter
+    btn_refresh.onclick = function(){
+      inputSearch.value = ''
+      refresh_form.submit()
+    }
+  })
+</script>

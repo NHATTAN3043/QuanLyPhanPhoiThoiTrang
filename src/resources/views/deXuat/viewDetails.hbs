@@ -1,0 +1,69 @@
+<div class="container mt-5">
+    <h2 class="text-center">CHI TIẾT ĐỀ XUẤT</h2>
+
+    <div class="mt-4 mb-4">
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2 font-weight-bold">
+                Tiêu đề:
+            </dt>
+            <dd class="col-sm-10">
+                {{deXuat.Tieude}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Thời gian đề xuất:
+            </dt>
+            <dd class="col-sm-10">
+                {{formatDate deXuat.createdAt}}
+            </dd>
+            <dt class="col-sm-2 font-weight-bold">
+                Cửa hàng đề xuất:
+            </dt>
+            <dd class="col-sm-10">
+                {{cuaHangDX.TenCuahang}} -- Địa chỉ: {{cuaHangDX.DiaChi}}
+            </dd>
+        </dl>
+    </div>
+    <h4 class="mb-3">DANH SÁCH CHI TIẾT ĐỀ XUẤT</h4>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr class="table-primary">
+                <th>Mã sp</th>
+                <th>Tên</th>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>Loại</th>
+                <th>Đối tượng</th>
+                <th>SL đề xuất</th>
+                <th>SL duyệt</th>             
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+           {{#each chitietdexuats}}
+           <tr>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaChiTietSanPham}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaSanPham_SanPham.TenSanPham}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaSize_Size.TenSize}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaMau_Mau.TenMau}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
+            <td>{{this.MaChiTietSanPham_ChiTietSanPham.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>
+            <td>{{this.SoLuongDeXuat}}</td>
+            <td>{{this.SoLuongDuyet}}</td>
+            <td>
+                {{this.TrangThaiDeXuat}}
+            </td>
+           </tr>
+
+           {{else}}
+            <tr>
+                <td colspan="9" style="text-align: center;">Bạn chưa chọn sản phẩm.</td>
+            </tr>
+           {{/each}}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <a href="/dexuat/index" class="btn btn-info">Quay lại</a>
+    </div>
+</div>
