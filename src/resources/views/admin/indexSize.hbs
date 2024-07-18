@@ -1,0 +1,39 @@
+<div>
+    <h3>BẢNG SIZE SẢN PHẨM</h3> 
+    <div style="margin-top: 5px;">
+    <a href="/me/trash/courses">Thêm mới</a>
+    </div>
+  </div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Mã size</th>
+      <th scope="col">
+        Tên size
+
+      </th>
+      <th scope="col">Hoạt động</th>
+    </tr>   
+  </thead>
+  <tbody>
+    {{#each sizes}}
+    <tr>
+      <td>{{this.MaSize}}</td>
+      <td>{{this.TenSize}}</td>
+      <td>
+        <div class="action-btn" style="display: flex;">
+        <a href="/size/view-edit/{{this.MaSize}}" class="btn btn-primary" style="margin:2px 5px;">Sửa</a>
+        <a href="" class="btn btn-danger" style="margin:2px 5px;">Xóa</a>
+        </div>       
+      </td> 
+    </tr>
+    {{else}}
+    <tr>
+      <td colspan="4" class="text-center">
+        Bạn chưa đăng khóa học nào.
+        <a href="/courses/create">Click vào đây để đăng</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

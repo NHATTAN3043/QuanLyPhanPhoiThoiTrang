@@ -1,0 +1,54 @@
+
+<h2 class="text-center mt-4">Thêm chi tiết đề xuất</h2>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form class="shadow p-4 rounded bg-light" method="POST" action="/dexuat/themchitietdexuat">
+            <input name="MaDeXuat" type="hidden" value="{{MaDeXuat}}"/>
+            <input name="TrangThaiDeXuat" type="hidden" value="Chờ duyệt"/>
+            <input name="MaChiTietSanPham" type="hidden" class="form-control" value="{{CTSP.MaChiTietSanPham}}"/>
+            <input name="SoLuongDuyet" type="hidden" value="0" id="SoLuongDuyet" />
+            <div class="text-right mb-3">
+                <a href="/dexuat/chonsanpham/{{MaDeXuat}}">Chọn lại</a>
+            </div>
+            <div class="form-group">
+                <h5>Sản phẩm đã chọn</h5>
+                <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Mã ctsp</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Màu</th>
+                    <th scope="col">Loại</th>
+                    <th scope="col">Đối tượng</th>                  
+                </tr>
+                </thead> 
+                <body>
+                    <tr>
+                        <td>{{CTSP.MaChiTietSanPham}}</td>
+                        <td>{{CTSP.MaSanPham_SanPham.TenSanPham}}</td>
+                        <td>{{CTSP.MaSize_Size.TenSize}}</td>
+                        <td>{{CTSP.MaMau_Mau.TenMau}}</td>
+                        <td>{{CTSP.MaLoaiSanPham_LoaiSanPham.TenLoaiSanPham}}</td>
+                        <td>{{CTSP.MaDoiTuong_DoiTuong.TenDoiTuong}}</td>
+                    </tr>
+                </body>
+                </table>              
+            </div>
+            <div class="form-group">
+                <label class="control-label">Lý do đề xuất:</label>
+                <textarea name="LyDoDeXuat" class="form-control" required></textarea>               
+            </div>
+            <div class="form-group">
+                <label name="SoLuongDeXuat" class="control-label">Số lượng đề xuất:</label>
+                <input name="SoLuongDeXuat" type="number" min="0" required/>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="thêm" class="btn btn-primary btn-block" />
+            </div>
+        </form>
+    </div>
+</div>
+

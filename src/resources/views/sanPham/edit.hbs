@@ -1,0 +1,17 @@
+<div class="container">
+<h3>CẬP NHẬT TÊN SẢN PHẨM</h3>
+<form method="POST" action="/sanpham/edit/{{sanpham.MaSanPham}}?_method=PUT">
+  <div class="form-group">
+    <label for="MaSanPham">Mã sản phẩm</label>
+    <input type="text" class="form-control" value="{{sanpham.MaSanPham}}" id="name" name="MaSanPham" readonly>
+  </div>
+  <div class="form-group">
+    <label for="TenSanPham">Tên sản phẩm</label>
+    <input type="text" class="form-control" value="{{sanpham.TenSanPham}}" id="TenSize" name="TenSanPham">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/sanpham/index">Quay lại</a>
+</div>
+</div>

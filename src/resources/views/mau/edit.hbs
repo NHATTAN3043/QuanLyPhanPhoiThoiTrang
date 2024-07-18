@@ -1,0 +1,17 @@
+<div class="container">
+<h3>CẬP NHẬT MÀU</h3>
+<form method="POST" action="/mau/edit/{{mau.MaMau}}?_method=PUT">
+  <div class="form-group">
+    <label for="MaMau">Mã màu</label>
+    <input type="text" class="form-control" value="{{mau.MaMau}}" id="name" name="MaMau" readonly>
+  </div>
+  <div class="form-group">
+    <label for="TenMau">Tên màu</label>
+    <input type="text" class="form-control" value="{{mau.TenMau}}" id="TenSize" name="TenMau">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/mau/index">Quay lại</a>
+</div>
+</div>

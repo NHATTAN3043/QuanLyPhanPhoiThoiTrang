@@ -1,0 +1,168 @@
+  <h3 style="color: red">PHIẾU NHẬP ĐÃ XÓA</h3> 
+  <div style="margin-top: 5px;">
+  <a href="/phieunhap/index">Quay lại</a>
+  </div>
+   <!-- form tim kiem va loc -->
+    <form method="GET" action="/phieunhap/trash" class="action-right">
+      <div class="form-group" style="width: fit-content;">        
+          <select class ="custom-select" name="MaNCC" style="width: fit-content">   
+              <option value="">-- Chọn nhà cung cấp --</option>
+              {{#each nhaCungCaps}}
+              <option value="{{this.MaNCC}}">{{this.TenNCC}}</option>
+              {{else}}
+              <option value="">Không có nhà cung cấp</option>
+              {{/each}}
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-filter"></i></button>
+      </div>
+    </form>
+  <!-- end -->  
+<form method="POST" action="/phieunhap/handle-indexform-actions">
+  <div class="mt-2 mb-2 d-flex">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="checkboxAll">
+        <label class="form-check-label" for="defaultCheck1">
+          Chọn tất cả
+        </label>
+    </div>
+    <div class="form-group selectlist">     
+        <select class="form-control form-control-sm" id="exampleFormControlSelect1" name="action" required="required">
+          <option value="">--hành động--</option>
+          <option value="restore">Khôi phục</option>
+          <option value="delete-force">Xóa vĩnh viễn</option>                
+        </select>
+    </div>
+      <button type="submit" class="btn btn-primary btn-sm" id="btnSubmit" disabled="disabled">Thực hiện</button>
+  </div>
+<table class="table" style="margin-top: 10px;">
+  <thead>
+    <tr class="table-warning">
+      <th scope="col">#</th>
+      <th scope="col">Mã PN</th>
+      <th scope="col">Tên NCC</th>
+      <th scope="col">Địa chỉ</th>
+      <th scope="col">Thời gian xóa</th>
+      <th scope="col">Hoạt động</th>
+
+    </tr>   
+  </thead>
+  <tbody>
+    {{#each phieunhaps}}
+    <tr>
+      <td>
+          <div class="mt-2 mb-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="maphieunhaps[]" value="{{this.MaPhieuNhap}}">            
+            </div>
+          </div>
+      </td>
+      <td>{{this.MaPhieuNhap}}</td>
+      <td>{{this.MaNCC_NhaCungCap.TenNCC}}</td>
+      <td>{{this.MaNCC_NhaCungCap.DiaChi}}</td>
+      <td>{{formatDate this.deletedAt}}</td>
+      <td>
+        <div class="action-btn" style="display: flex;">
+        <a href="" class="btn btn-restore" style="color: rgb(36, 8, 216);" data-maphieunhap="{{this.MaPhieuNhap}}">Khôi phục</a>
+        <a href="" class="btn" style="color: red;" data-toggle="modal" data-target="#delete-mau-modal" data-maphieunhap="{{this.MaPhieuNhap}}" >Xóa vĩnh viễn</a>
+        </div>       
+      </td> 
+    </tr>
+    {{else}}
+    <tr>
+      <td colspan="6" class="text-center">
+        Bạn chưa xóa phiếu nhập nào.
+        <a href="/phieunhap/index">Quay lại</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</form>
+{{!-- pagination page --}}
+<nav class="app-pagination mt-2">
+    <ul class="pagination justify-content-center">
+        {{#if (gt currentPage 1)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/trash?page={{decrement currentPage}}">Previous</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        {{/if}}
+
+        {{#pagination currentPage totalPages}}
+        <li class="page-item {{#if active}}active{{/if}}">
+            <a class="page-link" href="/phieunhap/trash?page={{number}}">{{number}}</a>
+        </li>
+        {{/pagination}}
+
+        {{#if (lt currentPage totalPages)}}
+        <li class="page-item">
+            <a class="page-link" href="/phieunhap/trash?page={{increment currentPage}}">Next</a>
+        </li>
+        {{else}}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+        </li>
+        {{/if}}
+    </ul>
+</nav>
+{{!-- form confirm delete --}}
+<div class="modal fade" id="delete-mau-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xóa phiếu nhập hàng</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có xác nhận xóa không?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+        <button id="btn-mau-delete" type="button" class="btn btn-danger">Xóa vĩnh viễn</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Form delete mau --}}
+<form name="form-delete-mau" method="POST"></form>
+{{!-- Form restore phieunhap --}}
+<form name="form-restore-phieunhap" method="POST"></form> 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var MaPN
+    const btn_comfirm_deleteMau = document.getElementById('btn-mau-delete')
+    const deleteForm = document.forms['form-delete-mau'] 
+    const restoreForm = document.forms['form-restore-phieunhap']
+    const btn_restore = $('.btn-restore')
+    // Function get id from btn delete
+    $('#delete-mau-modal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    MaPN = button.data('maphieunhap') // Extract info from data-* attributes
+    })
+    // handle btn confirm delete onclick
+    btn_comfirm_deleteMau.onclick = function(){
+      deleteForm.action = '/phieunhap/destroy/' + MaPN + '?_method=DELETE'
+      deleteForm.submit()
+    }
+    // handle btn-restore click
+    btn_restore.click(function(e){
+        e.preventDefault()
+        // Get id by Jquery 
+        const maPNR = $(this).data('maphieunhap')
+        restoreForm.action = '/phieunhap/restore/' + maPNR +'?_method=PATCH'
+        restoreForm.submit()
+    })
+    // function handle checkbox and btn submit
+    handleCheckbox({
+      checkboxAll: '#checkboxAll',
+      checkboxItem: 'input[name="maphieunhaps[]"]',
+      checkboxItemIsChecked: 'input[name="maphieunhaps[]"]:checked',
+      btnSubmitAction: '#btnSubmit'
+    })
+  })
+</script>

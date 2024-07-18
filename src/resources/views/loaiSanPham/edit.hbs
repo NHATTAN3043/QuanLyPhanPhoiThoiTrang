@@ -1,0 +1,17 @@
+<div class="container">
+<h3>CẬP NHẬT LOẠI SẢN PHẨM</h3>
+<form method="POST" action="/lsp/edit/{{lsp.MaLoaiSanPham}}?_method=PUT">
+  <div class="form-group">
+    <label for="MaLoaiSanPham">Mã loại sản phẩm</label>
+    <input type="text" class="form-control" value="{{lsp.MaLoaiSanPham}}" id="name" name="MaLoaiSanPham" readonly>
+  </div>
+  <div class="form-group">
+    <label for="TenLoaiSanPham">Tên loại</label>
+    <input type="text" class="form-control" value="{{lsp.TenLoaiSanPham}}" id="TenLSP" name="TenLoaiSanPham">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/lsp/index">Quay lại</a>
+</div>
+</div>

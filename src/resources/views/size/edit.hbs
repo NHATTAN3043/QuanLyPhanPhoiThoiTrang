@@ -1,0 +1,17 @@
+<div class="container">
+<h3>CẬP NHẬT SIZE</h3>
+<form method="POST" action="/size/edit/{{size.MaSize}}?_method=PUT">
+  <div class="form-group">
+    <label for="MaSize">Mã Size</label>
+    <input type="text" class="form-control" value="{{size.MaSize}}" id="name" name="MaSize" readonly>
+  </div>
+  <div class="form-group">
+    <label for="TenSize">Tên size</label>
+    <input type="text" class="form-control" value="{{size.TenSize}}" id="TenSize" name="TenSize">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/size/index">Quay lại</a>
+</div>
+</div>

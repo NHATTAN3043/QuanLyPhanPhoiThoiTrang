@@ -1,0 +1,21 @@
+<div class="container">
+<h3>CẬP NHẬT CỬA HÀNG</h3>
+<form method="POST" action="/cuahang/edit?_method=PUT">
+  <div class="form-group">
+    <label>Mã Cửa hàng</label>
+    <input type="text" class="form-control" value="{{cuahang.MaCuaHang}}" name="MaCuaHang" readonly>
+  </div>
+  <div class="form-group">
+    <label>Tên Cửa hàng</label>
+    <input type="text" class="form-control" value="{{cuahang.TenCuahang}}" name="TenCuahang">
+  </div>
+  <div class="form-group">
+    <label>Địa chỉ Cửa hàng</label>
+    <input type="text" class="form-control" value="{{cuahang.DiaChi}}" name="DiaChi">
+  </div>
+  <button type="submit" class="btn btn-success">Cập nhật</button>
+</form>
+<div style="margin: 10px 10px;">
+<a href="/cuahang/index">Quay lại</a>
+</div>
+</div>
