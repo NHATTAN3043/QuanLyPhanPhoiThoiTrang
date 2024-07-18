@@ -124,32 +124,7 @@ Tìm kiếm và lọc:
 - Tìm kiếm đề xuất và lọc theo cửa hàng và trạng thái
 ### Cấu trúc dự án
 
-project-root/
-├── src/
-│   ├── server.js
-│   ├── app/
-│        ------├── controllers
-│        ------└── models
-│   ├── config/
-│   ├── helpers/
-│   ├── public/
-│        ------├── assets
-│        ------├── css
-│        ------├── img
-│        ------├── scripts
-│        ------└── vendor
-│   ├── resources/
-│        ------├── scss
-│        ------└── views
-│   ├── routes/
-│   ├── util/
-├── .env
-├── package.json
-├── package-lockjson
-├── .babelrc
-└── README.md
-
 - Controllers: Chứa các controller điều khiển luồng dữ liệu và xử lý yêu cầu từ người dùng.
-- Models: Chứa các lớp mô hình đại diện cho dữ liệu của ứng dụng, được tạo từ cơ sở dữ liệu bằng cách sử dụng Database First.
-- Views: Chứa các file giao diện (Razor Pages) để hiển thị dữ liệu cho người dùng.
+- Models: Chứa các lớp mô hình đại diện cho dữ liệu của ứng dụng, được tạo từ cơ sở dữ liệu bằng cách sử dụng Database First với thư viện "sequelize-auto": "^0.8.8".
+- Views: Chứa các file giao diện (Handlebars.hbs) để hiển thị dữ liệu cho người dùng.
 - public: Chứa các file tĩnh như CSS, JavaScript và hình ảnh.
