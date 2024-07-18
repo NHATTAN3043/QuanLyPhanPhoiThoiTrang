@@ -36,5 +36,5 @@ initWebRoute(app)
 const PORT = process.env.DB_PORT ||  8080
 
 app.listen(PORT, () => {
-    console.log(`App listening on port http://localhost:${PORT}`)
+    console.log(`App listening on port http://localhost:${PORT}/taikhoan/view-login`)
   })

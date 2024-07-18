@@ -9,6 +9,7 @@
                 <textarea class="form-control" name="Tieude" required></textarea>
                 <span class="text-danger"></span>
             </div>
+            {{#if (equalString maQuyen 1)}}
             <div class="form-group">
                 <label asp-for="MaCuaHang" class="control-label">Cửa hàng</label>
                 <select class="form-select" name="MaCuaHang">
@@ -18,7 +19,10 @@
                         <option value="">Bạn không có cửa hàng nào</option>
                     {{/each}}
                 </select>
-            </div>                                                        
+            </div>
+            {{else}}    
+            <input type="hidden" name="MaCuaHang" value="{{MaCuaHang}}">
+            {{/if}}                                                    
             <input name="TrangThai" type="hidden" value="Chờ Duyệt"/>
             <div class="form-group">
                 <button type="submit" class="btn btn-success">Tạo</button>

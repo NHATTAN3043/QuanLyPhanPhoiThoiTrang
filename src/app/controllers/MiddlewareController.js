@@ -8,7 +8,7 @@ const MiddlewareController = {
             // const accesstoken = token.split(" ")[1]
             jwt.verify(token, process.env.JWT_ACCESS_KEY, (error, user) => {
                 if (error) {
-                    console.log("LOI NE " + error)
+                    console.log("ERROR VERIFYTOKEN:  " + error)
                     return res.status(403).json("Token is not valid")
                 }
                 req.user = user
@@ -40,7 +40,7 @@ const MiddlewareController = {
     verifytokenandDeliver: (req, res, next) => {
         try {
             MiddlewareController.verifytoken(req, res, () => {
-                if(req.user.MaQuyen === 3 ) {
+                if(req.user.MaQuyen === 3 || req.user.MaQuyen === 1) {
                     next()
                 }else {
                     return res.status(403).json('you are not a deliver')

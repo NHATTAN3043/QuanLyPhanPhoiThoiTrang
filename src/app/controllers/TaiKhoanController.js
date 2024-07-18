@@ -55,7 +55,7 @@ class TaiKhoanController {
                 } )
                 // Lưu accessToken vào cookie
                 res.cookie("accessToken", accessToken, {
-                    httpOnly: true, // Đảm bảo không thể truy cập từ JavaScript
+                    httpOnly: false, // Cho truy cập từ JavaScript
                     secure: false, // Thay đổi thành true nếu bạn sử dụng HTTPS
                     path: "/",
                     sameSite: "strict",
@@ -130,7 +130,15 @@ class TaiKhoanController {
                 path: "/",
                 sameSite: "strict",
             })
+            // store newAccessToken into cookie
+            res.cookie("accessToken", newAccessToken, {
+                httpOnly: false,
+                secure: false,
+                path: "/",
+                sameSite: "strict",
+            })
             res.status(200).json({accessToken: newAccessToken})
+           
         })
     }
 

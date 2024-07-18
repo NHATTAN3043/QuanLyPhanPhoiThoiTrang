@@ -10,11 +10,15 @@ class DeXuatController {
     // GET /dexuat/index
     async index(req, res, next) {
         const searchConditions = req.query
+        const user = await models.TaiKhoan.findOne({where: {[Op.and] : [{Email: req.user.Email},{MaQuyen: 2}]}})
         let whereConditions = []  
         const page = parseInt(req.query.page) || 1
         const limit = 6
         const offset = (page - 1) * limit
-        try {         
+        try {    
+            if (user) {
+                whereConditions.push({MaCuaHang: user.MaCuaHang})
+            }     
             // count chitietsanpham
             const countAlldx = await models.DeXuat.count({})
             // chia trang
@@ -86,8 +90,10 @@ class DeXuatController {
     // GET /dexuat/view-create
     async viewCreate(req, res, next) {
         try {
+            const user = await models.TaiKhoan.findOne({where: {Email: req.user.Email}}) 
             res.render('./deXuat/create', {
                 cuahangs: mutipleSequelizeToObject(await cuahangs()),
+                MaCuaHang: user.MaCuaHang,
                 maQuyen: req.user.MaQuyen,
             })
         } catch (error) {
