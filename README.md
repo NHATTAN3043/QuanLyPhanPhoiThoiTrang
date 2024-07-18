@@ -4,6 +4,7 @@
 - [Website Quản lý phân phối hàng hóa thời trang](#website-quản-lý-phân-phối-hàng-hóa-thời-trang)
     - [Mục lục](#mục-lục)
     - [Giới thiệu](#giới-thiệu)
+    - [Công nghệ phát triển](#công-nghệ-phát-triển)
     - [Chức năng chính](#chức-năng-chính)
     - [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
     - [Các package cần cài đặt](#các-package-cần-cài-đặt)
@@ -14,6 +15,10 @@
 ### Giới thiệu
 - Tác giả: Nguyễn Nhật Tân
 - Mô tả đề tài: Website giúp quản lý nhập xuất hàng hóa thời trang với các chức năng nhập hàng trong kho, xuất hàng theo đề xuất và trạng thái vận chuyển.
+
+### Công nghệ phát triển
+- Front-end: Html-css, javaScript, Bootstrap4...
+- Back-end: NodeJS (ExpressJS)
 
 ### Chức năng chính
 - Quản lý thông tin nhập hàng: Phiếu nhập, Nhà cung cấp.
