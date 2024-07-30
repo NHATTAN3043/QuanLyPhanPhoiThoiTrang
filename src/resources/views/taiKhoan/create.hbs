@@ -4,8 +4,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="POST" action="/taikhoan/create" >
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form method="POST" action="/taikhoan/create" enctype="multipart/form-data" >
             <div class="form-group">
                 <label name="MaQuyen" class="control-label">Chức vụ</label>
                 <select name="MaQuyen" class ="custom-select" required>
@@ -27,22 +26,21 @@
             <div class="form-group">
                 <label name="HoTen" class="control-label">Họ tên</label>
                 <input name="HoTen" class="form-control" />
-                <span asp-validation-for="HoTen" class="text-danger"></span>
             </div>          
             <div class="form-group">
                 <label name="HinhAnh" class="control-label">Hình ảnh</label>
-                <input name="HinhAnh" class="form-control" />
-                <span asp-validation-for="HinhAnh" class="text-danger"></span>
+                <input type="file" name="HinhAnh" class="form-control" />
+                <span class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label name="" class="control-label">SDT</label>
                 <input name="SDT" class="form-control" />
-                <span asp-validation-for="SDT" class="text-danger"></span>
+                <span class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label name="NgaySinh" class="control-label">Ngày sinh</label>
                 <input type="date" name="NgaySinh" class="form-control" />
-                <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                <span class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label name="Gioitinh" class="control-label">Giới tính</label>
@@ -51,19 +49,19 @@
                     <option value="{{this.value}}">{{this.value}}</option>
                     {{/each}}
                 </select>
-                <span asp-validation-for="Gioitinh" class="text-danger"></span>
+                <span class="text-danger"></span>
             </div>           
             <div class="form-group">
                 <label name="Email" class="control-label">Email</label>
                 <input type="email" name="Email" class="form-control" required />
                 {{#if message}}
-                <span asp-validation-for="Email" class="text-danger">Email đã tồn tại!</span>
+                <span class="text-danger">Email đã tồn tại!</span>
                 {{/if}}
             </div>
             <div class="form-group">
                 <label name="Matkhau" class="control-label">Mật khẩu</label>
                 <input type="password" class="form-control" id="password" required/>
-                <span asp-validation-for="Matkhau" class="text-danger"></span>
+                <span class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label name="Matkhau" class="control-label">Nhập lại mật khẩu</label>

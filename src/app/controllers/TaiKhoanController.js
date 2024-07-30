@@ -187,6 +187,8 @@ class TaiKhoanController {
     // POST /taikhoan/create
     async create(req, res, next) {
         try {
+            const file = req.cloudinaryFile
+            req.body.HinhAnh = file.path
             const salt = await bcrypt.genSalt(10)
             const hashed = await bcrypt.hash(req.body.matkhau, salt)
             req.body.matkhau = hashed

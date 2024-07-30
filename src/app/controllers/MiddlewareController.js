@@ -50,7 +50,7 @@ const MiddlewareController = {
             next(error)
         }
         
-    }
+    },
 
 }
 
